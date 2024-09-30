@@ -1,9 +1,9 @@
 TEMPLATE = subdirs
 CONFIG += ordered
 SUBDIRS = \
-    designer \
+#    designer \
     systemparameters \
     devices \
     tagmanager \
     rtdb \
-    script
+#    script
