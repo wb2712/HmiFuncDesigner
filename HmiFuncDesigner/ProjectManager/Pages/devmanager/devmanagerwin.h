@@ -1,5 +1,5 @@
-﻿#ifndef TAGMANAGERWIN_H
-#define TAGMANAGERWIN_H
+#ifndef DEVMANAGERWIN_H
+#define DEVMANAGERWIN_H
 
 #include "../../../libs/shared/projdata/tag.h"
 #include "listviewex.h"
@@ -18,7 +18,7 @@
 
 
 
-class TagTableModel : public QAbstractTableModel
+class DevTableModel : public QAbstractTableModel
 {
     Q_OBJECT
 
@@ -28,16 +28,17 @@ public:
         Name = 1,
         Addr = 2,
         DataType = 3,
-        AddrOffsetBit = 4,
-        Formula = 5,
-        Remark = 6,
-        // ...
+        ReadWrite = 4,
+        Unit = 5,
+        Rate = 6,
+        FunctionCodes = 7,
+        Remark = 8,
 
-        MaxColumns = 7
+        MaxColumns = 9
     };
 
 public:
-    explicit TagTableModel(QObject *parent = nullptr) : QAbstractTableModel(parent) {}
+    explicit DevTableModel(QObject *parent = nullptr) : QAbstractTableModel(parent) {}
 
     Qt::ItemFlags flags(const QModelIndex &index) const;
 
@@ -137,7 +138,7 @@ protected:
     void mousePressEvent(QMouseEvent *event);
 
 public:
-    TagTableModel *m_pTagTableModel = NULL;
+    DevTableModel *m_pDevTableModel = NULL;
 
 private:
     bool m_bCopyOrCutDone = false; // true-执行过复制或剪切, false-未执行过复制或剪切
@@ -150,12 +151,12 @@ private:
 //------------------------------------------------------------------------------
 
 
-class TagManagerWin : public QWidget
+class DevManagerWin : public QWidget
 {
     Q_OBJECT
 public:
-    explicit TagManagerWin(QWidget *parent = NULL);
-    ~TagManagerWin();
+    explicit DevManagerWin(QWidget *parent = NULL);
+    ~DevManagerWin();
 
 protected:
     bool event(QEvent *ev);
@@ -174,4 +175,4 @@ private:
     QAction *m_pActImportTagObj = NULL; // 导入变量
 };
 
-#endif // TAGMANAGERWIN_H
+#endif // DEVMANAGERWIN_H

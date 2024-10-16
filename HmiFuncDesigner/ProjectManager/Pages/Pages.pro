@@ -7,3 +7,5 @@ SUBDIRS = \
     tagmanager \
     rtdb \
 #    script
+    devmanager \
+    DevModle \

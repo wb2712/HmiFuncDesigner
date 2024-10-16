@@ -217,7 +217,7 @@ RESOURCES += \
 ################################################################################
 
 INCLUDEPATH += $$PWD/projdata
-
+DEPENDPATH += $$PWD/projdata
 SOURCES += \
     projdata/dataaes.cpp \
     projdata/tag.cpp \
@@ -229,7 +229,8 @@ SOURCES += \
     projdata/deviceinfo.cpp \
     projdata/pictureresourcemanager.cpp \
     projdata/script.cpp \
-    projdata/helper.cpp
+    projdata/helper.cpp \
+    projdata/DevModleInfo.cpp \
 
 
 HEADERS += \
@@ -243,4 +244,5 @@ HEADERS += \
     projdata/deviceinfo.h \
     projdata/pictureresourcemanager.h \
     projdata/script.h \
-    projdata/helper.h
+    projdata/helper.h \
+    projdata/DevModleInfo.h \

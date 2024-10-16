@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>TagEditDialog</class>
- <widget class="QDialog" name="TagEditDialog">
+ <class>DevEditDialog</class>
+ <widget class="QDialog" name="DevEditDialog">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -13,8 +13,8 @@
   <property name="windowTitle">
    <string>Dialog</string>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout">
-   <item>
+  <layout class="QGridLayout" name="gridLayout_2">
+   <item row="0" column="0">
     <widget class="QTabWidget" name="tabWidget_2">
      <property name="currentIndex">
       <number>0</number>
@@ -70,81 +70,141 @@
      </widget>
     </widget>
    </item>
-   <item>
+   <item row="1" column="0">
     <widget class="QTabWidget" name="tabWidget">
      <property name="currentIndex">
       <number>0</number>
      </property>
-     <widget class="QWidget" name="tabBasicInfo">
+     <widget class="QWidget" name="tabBasicInfo_3">
       <attribute name="title">
        <string>基本信息</string>
       </attribute>
-      <layout class="QVBoxLayout" name="verticalLayout_7">
+      <layout class="QVBoxLayout" name="verticalLayout_9">
        <item>
-        <layout class="QGridLayout" name="gridLayout_2">
-         <item row="0" column="0">
-          <widget class="QLabel" name="label_11">
-           <property name="text">
-            <string>变量名称</string>
-           </property>
-          </widget>
-         </item>
-         <item row="0" column="2">
-          <widget class="QLabel" name="label_14">
+        <layout class="QGridLayout" name="gridLayout_5">
+         <item row="3" column="0">
+          <widget class="QLabel" name="label_29">
            <property name="text">
             <string>数据类型</string>
            </property>
           </widget>
          </item>
-         <item row="2" column="0">
-          <widget class="QLabel" name="label_17">
+         <item row="1" column="1">
+          <widget class="QComboBox" name="cboAddrType"/>
+         </item>
+         <item row="2" column="2">
+          <widget class="QLabel" name="label_30">
            <property name="text">
-            <string>地址偏移</string>
+            <string>数值计算</string>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="2">
+          <widget class="QLabel" name="label_31">
+           <property name="text">
+            <string>地址</string>
            </property>
           </widget>
          </item>
          <item row="0" column="3">
-          <widget class="QComboBox" name="cboDataType">
+          <widget class="QLineEdit" name="editTagUnit"/>
+         </item>
+         <item row="2" column="1">
+          <widget class="QComboBox" name="FunctionCodes"/>
+         </item>
+         <item row="1" column="0">
+          <widget class="QLabel" name="label_32">
+           <property name="text">
+            <string>地址类型</string>
+           </property>
+          </widget>
+         </item>
+         <item row="4" column="1" colspan="3">
+          <widget class="QPlainTextEdit" name="editTagDesc"/>
+         </item>
+         <item row="0" column="2">
+          <widget class="QLabel" name="label_33">
+           <property name="text">
+            <string>变量单位</string>
+           </property>
+          </widget>
+         </item>
+         <item row="3" column="3">
+          <widget class="QComboBox" name="cboReadWriteType">
            <item>
             <property name="text">
-             <string>D</string>
+             <string>只读</string>
             </property>
            </item>
            <item>
             <property name="text">
-             <string>B</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>SQ_Keys_or</string>
+             <string>可写</string>
             </property>
            </item>
           </widget>
          </item>
          <item row="2" column="3">
-          <widget class="QLineEdit" name="editAddrOffset_2"/>
-         </item>
-         <item row="5" column="1" colspan="3">
-          <widget class="QPlainTextEdit" name="editTagDesc"/>
-         </item>
-         <item row="4" column="1" colspan="3">
-          <widget class="QLineEdit" name="formula"/>
+          <widget class="QLineEdit" name="rate"/>
          </item>
          <item row="0" column="1">
           <widget class="QLineEdit" name="editTagName"/>
          </item>
-         <item row="5" column="0">
-          <layout class="QVBoxLayout" name="verticalLayout_6">
+         <item row="3" column="2">
+          <widget class="QLabel" name="label_34">
+           <property name="text">
+            <string>读写类型</string>
+           </property>
+          </widget>
+         </item>
+         <item row="3" column="1">
+          <widget class="QComboBox" name="cboDataType">
            <item>
-            <widget class="QLabel" name="label_15">
+            <property name="text">
+             <string>FLOAT</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>U16</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>S16</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>UFLOAT</string>
+            </property>
+           </item>
+          </widget>
+         </item>
+         <item row="0" column="0">
+          <widget class="QLabel" name="label_35">
+           <property name="text">
+            <string>变量名称</string>
+           </property>
+          </widget>
+         </item>
+         <item row="2" column="0">
+          <widget class="QLabel" name="label_36">
+           <property name="text">
+            <string>功能码</string>
+           </property>
+          </widget>
+         </item>
+         <item row="4" column="0">
+          <layout class="QVBoxLayout" name="verticalLayout_10">
+           <item>
+            <widget class="QLabel" name="label_37">
              <property name="text">
               <string>变量描述</string>
              </property>
             </widget>
            </item>
            <item>
-            <spacer name="verticalSpacer_4">
+            <spacer name="verticalSpacer_8">
              <property name="orientation">
               <enum>Qt::Vertical</enum>
              </property>
@@ -158,33 +218,13 @@
            </item>
           </layout>
          </item>
-         <item row="2" column="2">
-          <widget class="QLineEdit" name="editAddrOffset_1"/>
-         </item>
-         <item row="2" column="1">
+         <item row="1" column="3">
           <widget class="QLineEdit" name="editAddrOffset"/>
-         </item>
-         <item row="4" column="0">
-          <widget class="QLabel" name="label_2">
-           <property name="text">
-            <string>公式</string>
-           </property>
-          </widget>
-         </item>
-         <item row="3" column="1">
-          <widget class="QLineEdit" name="editAddrOffsetBit"/>
-         </item>
-         <item row="3" column="0">
-          <widget class="QLabel" name="label_3">
-           <property name="text">
-            <string>Bit</string>
-           </property>
-          </widget>
          </item>
         </layout>
        </item>
        <item>
-        <spacer name="verticalSpacer_5">
+        <spacer name="verticalSpacer_9">
          <property name="orientation">
           <enum>Qt::Vertical</enum>
          </property>
@@ -200,7 +240,7 @@
      </widget>
     </widget>
    </item>
-   <item>
+   <item row="2" column="0">
     <layout class="QHBoxLayout" name="horizontalLayout">
      <item>
       <spacer name="horizontalSpacer_2">
@@ -214,6 +254,13 @@
         </size>
        </property>
       </spacer>
+     </item>
+     <item>
+      <widget class="QPushButton" name="btnSave">
+       <property name="text">
+        <string>保存</string>
+       </property>
+      </widget>
      </item>
      <item>
       <widget class="QPushButton" name="btnOk">

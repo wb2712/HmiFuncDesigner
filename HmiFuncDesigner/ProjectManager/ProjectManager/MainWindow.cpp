@@ -1,4 +1,4 @@
-﻿#include "MainWindow.h"
+#include "MainWindow.h"
 #include <QApplication>
 #include <QCloseEvent>
 #include <QGuiApplication>
@@ -472,7 +472,7 @@ void MainWindow::onNewPoject()
         pNewProjectDlg->save();
         updateRecentProjectList(QSoftCore::getCore()->getProjectCore()->m_szProjFile);
         // 拷贝系统变量
-        copySystemTags();
+        // copySystemTags();
         QSoftCore::getCore()->getProjectCore()->createNewProj(QSoftCore::getCore()->getProjectCore()->m_szProjFile);
     }
 }
@@ -1079,9 +1079,9 @@ bool MainWindow::buildBlockReadTags()
     QMap<QString, QVector<Tag *> > mapDevBlockReadTags;
     foreach (Tag *pTagObj, pCoreObj->m_tagMgr.m_vecTags) {
         // 系统变量或内存变量
-        if(pTagObj->m_addrType == "AutoAlloc") {
-            continue;
-        }
+//        if(pTagObj->m_addrType == "AutoAlloc") {
+//            continue;
+//        }
         QString dev = pTagObj->m_devType;
         if(mapDevBlockReadTags.count(dev) > 0) {
             QVector<Tag *> &vecTags = mapDevBlockReadTags[dev];

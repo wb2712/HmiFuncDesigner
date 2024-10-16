@@ -1,5 +1,5 @@
-#ifndef TAGEDITDIALOG_H
-#define TAGEDITDIALOG_H
+#ifndef DEVEDITDIALOG_H
+#define DEVEDITDIALOG_H
 
 #include <QDialog>
 #include <QMap>
@@ -9,23 +9,18 @@
 #include "../shared/property/qabstractproperty.h"
 #include "../shared/qprojectcore.h"
 namespace Ui {
-class TagEditDialog;
+class DevEditDialog;
 }
 
-class CORELIB_EXPORT TagEditDialog : public QDialog
+class CORELIB_EXPORT DevEditDialog : public QDialog
 {
     Q_OBJECT
 
 public:
-    explicit TagEditDialog(QWidget *parent = nullptr, Tag* objTag = nullptr);
-    ~TagEditDialog();
+    explicit DevEditDialog(QWidget *parent = nullptr, Tag* objTag = nullptr);
+    ~DevEditDialog();
     // 更新UI
     void updateUI();
-    // 设置地址类型和数据类型
-    void setAddrTypeAndDataType(QMap<QString, QStringList> mapDevToAddrType,
-                                QMap<QString, QString> mapAddrTypeToAddrTypeAlias,
-                                QMap<QString, QStringList> mapAddrTypeToSubAddrType,
-                                QMap<QString, QStringList> mapAddrTypeToDataType);
 
     // 设置地址类型的限制范围
     void setAddrTypeLimit(QMap<QString, QMap<QString, quint32>> mapLimit);
@@ -45,10 +40,11 @@ private slots:
     void on_cboAddrType2_currentTextChanged(const QString &szAddrType);
     // 设备改变
     void on_cboDev_currentIndexChanged(const QString &szDev);
+
     void on_btnSave_clicked();
 
 private:
-    Ui::TagEditDialog *ui;
+    Ui::DevEditDialog *ui;
     QJsonObject m_jsonTagObj; // 变量
     QMap<QString, QStringList> m_mapDevToAddrType;
     QMap<QString, QString> m_mapAddrTypeToAddrTypeAlias; // 寄存器类型名称和别名寄存器类型映射
@@ -56,7 +52,7 @@ private:
     QMap<QString, QStringList> m_mapAddrTypeToDataType;
     QMap<QString, QMap<QString, quint32>> m_mapAddrTypeToLimit;
 
-    RedisTag* m_objTag = nullptr;
+    DeviceTag* m_objTag = nullptr;
 };
 
-#endif // TagEditDialog_H
+#endif // DEVEDITDIALOG_H
