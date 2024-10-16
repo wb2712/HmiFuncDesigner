@@ -13,7 +13,7 @@
 #include "./projdata/tag.h"
 #include "./projdata/script.h"
 #include "sharedlibglobal.h"
-
+#include "./projdata/DevModleInfo.h"
 #pragma pack(push)
 #pragma pack(1)
 typedef struct FileHeader {
@@ -96,11 +96,12 @@ public:
     NetSetting m_netSetting; // 网络配置
     DatabaseSetting m_dbSetting; // 数据库配置
     UserAuthority m_userAuthority; // 用户权限
-    DeviceInfo m_deviceInfo; // 设备配置信息
+    DeviceInfo m_deviceInfo; // 通讯设备配置信息
     PictureResourceManager m_pictureResourceMgr; // 图片资源管理
     TagManager m_tagMgr; // 标签变量
     Script m_script; // 脚本
     TFileHeader m_headerObj;
+    DevModleInfo m_devModleInfo; // 设备模型配置信息
 
 protected:
     QProjectHost* m_pProjectHostObj;

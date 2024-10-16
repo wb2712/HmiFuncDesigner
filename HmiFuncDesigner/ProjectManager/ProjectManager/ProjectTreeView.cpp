@@ -85,6 +85,15 @@ void ProjectTreeView::updateUI()
     m_pProjectItemObj->appendRow(m_pSystemParametersObj);
 
     //////////////////////////////////////////////////////
+    m_pDevModleObj = new QStandardItem(QIcon(":/images/pj_sys.png"), tr("设备模型管理"));
+    m_pDevModleObj->setEditable(false);
+    szListUserData.clear();
+    szListUserData << QString("DevModle").toUpper()
+                   << m_pDevModleObj->text()
+                   << QString("DevModle").toUpper();;
+    m_pDevModleObj->setData(szListUserData, Qt::UserRole + 1);
+    m_pProjectItemObj->appendRow(m_pDevModleObj);
+
 
     m_pCommunicationDeviceObj = new QStandardItem(QIcon(":/images/pj_sys.png"), tr("通讯设备"));
     m_pCommunicationDeviceObj->setEditable(false);
@@ -114,6 +123,18 @@ void ProjectTreeView::updateUI()
 
     m_pProjectItemObj->appendRow(m_pCommunicationDeviceObj);
 
+    m_pDeviceObj = new QStandardItem(QIcon(":/images/pj_sys.png"), tr("设备点表管理"));
+    m_pDeviceObj->setEditable(false);
+    szListUserData.clear();
+    szListUserData << QString("DevMgr").toUpper()
+                   << m_pDeviceObj->text()
+                   << "";
+    m_pDeviceObj->setData(szListUserData, Qt::UserRole + 1);
+
+    m_pProjectItemObj->appendRow(m_pDeviceObj);
+
+
+
     m_pTagMgrObj = new QStandardItem(QIcon(":/images/pj_sys.png"), tr("变量管理"));
     m_pTagMgrObj->setEditable(false);
     szListUserData.clear();
@@ -122,6 +143,7 @@ void ProjectTreeView::updateUI()
                    << "";
     m_pTagMgrObj->setData(szListUserData, Qt::UserRole + 1);
     m_pProjectItemObj->appendRow(m_pTagMgrObj);
+
 
     m_pDataBaseManagerObj = new QStandardItem(QIcon(":/images/pj_sys.png"), tr("数据库管理"));
     m_pDataBaseManagerObj->setEditable(false);

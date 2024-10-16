@@ -32,6 +32,8 @@ INCLUDEPATH += $$PWD
 INCLUDEPATH += $$PWD/qpropertylist
 INCLUDEPATH += $$PWD/undocommand
 INCLUDEPATH += $$PWD/../qscintilla
+INCLUDEPATH += $$PWD/DevEditDialog
+INCLUDEPATH += $$PWD/DevModleDialog
 
 LIB_FILE_PATH = $$clean_path($$DESTDIR)
 
@@ -154,7 +156,11 @@ HEADERS += \
     netsettingdialog.h \
     newprojectdialog.h \
     qipaddressedit.h  \
-    userauthoritydialog.h
+    userauthoritydialog.h \
+    DevEditDialog/DevEditDialog.h \
+    DevEditDialog/CEmsGlobalDefines.h \
+    DevModleDialog/DevModleDialog.h \
+    DevModleDialog/StationDialog.h
 
 SOURCES += \
     devicelistdialog.cpp \
@@ -266,7 +272,10 @@ SOURCES += \
     netsettingdialog.cpp \
     newprojectdialog.cpp \
     qipaddressedit.cpp \
-    userauthoritydialog.cpp
+    userauthoritydialog.cpp \
+    DevEditDialog/DevEditDialog.cpp \
+    DevModleDialog/DevModleDialog.cpp \
+    DevModleDialog/StationDialog.cpp
 
 FORMS += \
     devicelistdialog.ui \
@@ -315,7 +324,10 @@ FORMS += \
     netsettingdialog.ui \
     newprojectdialog.ui \
     qipaddressedit.ui \
-    userauthoritydialog.ui
+    userauthoritydialog.ui \
+    DevEditDialog/DevEditDialog.ui \
+    DevModleDialog/DevModleDialog.ui \
+    DevModleDialog/StationDialog.ui
 
 
 RESOURCES += \

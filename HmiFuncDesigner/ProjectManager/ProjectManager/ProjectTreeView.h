@@ -37,6 +37,8 @@ private:
     QStandardItemModel *m_pItemModelObj = NULL;
     QStandardItem *m_pProjectItemObj = NULL;
     QStandardItem *m_pSystemParametersObj = NULL;
+    QStandardItem *m_pDeviceObj = NULL;
+    QStandardItem *m_pDevModleObj = NULL;
     QStandardItem *m_pCommunicationDeviceObj = NULL;
     QStandardItem *m_pComDeviceObj = NULL;
     QStandardItem *m_pNetDeviceObj = NULL;

@@ -12,7 +12,7 @@ SUBDIRS   = \
 #    Ftp \
     shared \
     gradienteditor \
-    core
+    Core
 
 
 for(l, SUBDIRS) {

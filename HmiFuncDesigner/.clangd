@@ -1,0 +1,62 @@
+Diagnostics:
+  ClangTidy:
+    Add:
+      [
+        readability-identifier*,
+      ]
+    CheckOptions:
+	
+	  #########################  变量 #############################
+      # 局部变量
+      readability-identifier-naming.VariableCase: lower_case
+      # 全局变量
+      readability-identifier-naming.GlobalVariableCase: CamelCase
+      # 全局变量  前缀
+      readability-identifier-naming.GlobalVariablePrefix: g_
+	  
+	  #类的公共成员变量命名应该使用小写字母
+	  readability-identifier-naming.PublicMemberCase: lower_case
+	  # 成员变量 前缀
+      # readability-identifier-naming.MemberPrefix: m_
+      # 成员变量
+      # readability-identifier-naming.MemberCase: camelBack
+	  
+      # 私有成员变量 前缀
+      readability-identifier-naming.PrivateMemberPrefix: m_
+	  # 私有成员变量
+      readability-identifier-naming.PrivateMemberCase: lower_case
+	  
+      # 类成员变量 前缀
+      # readability-identifier-naming.ClassMemberPrefix: m
+      # 类成员变量
+      readability-identifier-naming.ClassMemberCase: CamelCase
+
+	  #########################  类型  #############################
+      # 枚举 宏定义及枚举
+      readability-identifier-naming.EnumCase: UPPER_CASE
+      # 枚举常量名称  
+      readability-identifier-naming.EnumConstantCase: UPPER_CASE
+      # 宏定义
+      readability-identifier-naming.MacroDefinitionCase: UPPER_CASE
+
+      # 类名 大坨峰
+      readability-identifier-naming.ClassCase: CamelCase
+      # 结构体 大坨峰
+      readability-identifier-naming.StructCase: CamelCase
+	  
+	  #########################  函数  #############################
+      # 自由函数  大坨峰
+      readability-identifier-naming.FunctionCase: CamelCase
+      # 类静态成员函数  小驼峰
+      readability-identifier-naming.ClassMethodCase: CamelCase
+      # 对象方法 小驼峰
+      readability-identifier-naming.MethodCase: camelBack
+
+      readability-identifier-naming.PrivateMethodPrefix: _
+      readability-identifier-naming.PrivateMethodCase: camelBack
+
+	  #########################  常量  #############################
+      # 常量名称
+      readability-identifier-naming.ConstantCase: CamelCase
+      # 常量名称 前缀 大坨峰
+      readability-identifier-naming.ConstantPrefix: k

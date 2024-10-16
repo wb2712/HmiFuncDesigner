@@ -1,5 +1,5 @@
-#ifndef DEVICEINFO_H
-#define DEVICEINFO_H
+#ifndef DEVMODLEINFO_H
+#define DEVMODLEINFO_H
 
 #include <QString>
 #include <QStringList>
@@ -7,30 +7,30 @@
 #include "../xmlobject.h"
 #include "../sharedlibglobal.h"
 
-class SHAREDLIB_EXPORT DeviceInfoObject
+class SHAREDLIB_EXPORT DevModleInfoObject
 {
 public:
-    explicit DeviceInfoObject()
+    explicit DevModleInfoObject()
     {
 
     }
 
-    DeviceInfoObject(const DeviceInfoObject &obj)
+    DevModleInfoObject(const DevModleInfoObject &obj)
     {
         copyObject(obj);
     }
 
-    ~DeviceInfoObject()
+    ~DevModleInfoObject()
     {
     }
 
-    DeviceInfoObject &operator=(const DeviceInfoObject &obj)
+    DevModleInfoObject &operator=(const DevModleInfoObject &obj)
     {
         copyObject(obj);
         return *this;
     }
 
-    void copyObject(const DeviceInfoObject &obj)
+    void copyObject(const DevModleInfoObject &obj)
     {
         m_id = obj.m_id;
         m_deviceType = obj.m_deviceType;
@@ -47,6 +47,29 @@ public:
         m_portParameters = obj.m_portParameters;
         m_properties = obj.m_properties;
 
+        
+        dev_Name = obj.dev_Name;
+        Category = obj.Category;
+        ArchType = obj.ArchType;
+        BusType = obj.BusType;
+        ProtoType = obj.ProtoType;
+        ClassID = obj.ClassID;
+        dev_manufactory = obj.dev_manufactory;
+        dev_Type = obj.dev_Type;
+
+        ArchType_2 = obj.ArchType_2;
+        BusType_2 = obj.BusType_2;
+        ClassID_2 = obj.ClassID_2;
+
+
+        num = obj.num;
+        devices = obj.devices;
+        PowerCtrl = obj.PowerCtrl;
+        MonitorCtrl = obj.MonitorCtrl;
+        PCS = obj.PCS;
+        BAMS = obj.BAMS;
+        Pump = obj.Pump;
+        PumpCtrl = obj.PumpCtrl;
     }
 
 public:
@@ -65,17 +88,39 @@ public:
     QString m_portParameters;
     QString m_properties; // 设备私有属性
 
+    QString dev_Name;
+    int Category;
+    int ArchType;
+    int BusType;
+    int ProtoType;
+    QString ClassID;
+    QString dev_manufactory;
+    QString dev_Type;
+    int ArchType_2;
+    int BusType_2;
+    QString ClassID_2;
+
+    int num;
+    QString devices;
+    QString PowerCtrl;
+    QString MonitorCtrl;
+    QString PCS;
+    QString BAMS;
+    QString Pump;
+    QString PumpCtrl;
+
 };
 
-class SHAREDLIB_EXPORT ComDevice : public DeviceInfoObject
+/*
+class SHAREDLIB_EXPORT ComDevice : public DevModleInfoObject
 {
 public:
-    explicit ComDevice() : DeviceInfoObject()
+    explicit ComDevice() : DevModleInfoObject()
     {
 
     }
 
-    ComDevice(const ComDevice &obj) : DeviceInfoObject(obj)
+    ComDevice(const ComDevice &obj) : DevModleInfoObject(obj)
     {
         copyObject(obj);
     }
@@ -93,7 +138,7 @@ public:
 
     void copyObject(const ComDevice &obj)
     {
-        DeviceInfoObject::copyObject(obj);
+        DevModleInfoObject::copyObject(obj);
         m_portNumber = obj.m_portNumber;
         m_baudrate = obj.m_baudrate;
         m_databit = obj.m_databit;
@@ -137,15 +182,15 @@ public:
 };
 
 
-class SHAREDLIB_EXPORT NetDevice : public DeviceInfoObject
+class SHAREDLIB_EXPORT NetDevice : public DevModleInfoObject
 {
 public:
-    explicit NetDevice() : DeviceInfoObject()
+    explicit NetDevice() : DevModleInfoObject()
     {
 
     }
 
-    NetDevice(const NetDevice &obj) : DeviceInfoObject(obj)
+    NetDevice(const NetDevice &obj) : DevModleInfoObject(obj)
     {
         copyObject(obj);
     }
@@ -163,7 +208,7 @@ public:
 
     void copyObject(const NetDevice &obj)
     {
-        DeviceInfoObject::copyObject(obj);
+        DevModleInfoObject::copyObject(obj);
         m_ipAddress = obj.m_ipAddress;
         m_port = obj.m_port;
         m_ipAddress1 = obj.m_ipAddress1;
@@ -198,28 +243,28 @@ public:
     int m_port1;
 };
 
-
-class SHAREDLIB_EXPORT DeviceInfo
+*/
+class SHAREDLIB_EXPORT DevModleInfo
 {
 public:
-    explicit DeviceInfo();
-    ~DeviceInfo();
+    explicit DevModleInfo();
+    ~DevModleInfo();
 
     bool openFromXml(XMLObject *pXmlObj);
     bool saveToXml(XMLObject *pXmlObj);
 
-    DeviceInfoObject *newObject();
-    DeviceInfoObject *getObjectByID(int id);
-    DeviceInfoObject *getObjectByName(const QString &name);
+    DevModleInfoObject *newObject();
+    DevModleInfoObject *getObjectByID(int id);
+    DevModleInfoObject *getObjectByName(const QString &name);
 
     // 分配一个设备ID
     static int allocNewDeviceID();
 
 public:
-    QList<DeviceInfoObject *> m_listDeviceInfoObject;
+    QList<DevModleInfoObject *> m_listDevModleInfoObject;
 
 private:
     static int m_startNewDeviceID;
 };
 
-#endif // DEVICEINFO_H
+#endif // DEVMODLEINFO_H

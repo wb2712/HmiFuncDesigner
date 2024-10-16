@@ -1,4 +1,4 @@
-#include "tagmanagerwin.h"
+#include "devmanagerwin.h"
 #include "stringdata.h"
 #include "writer.h"
 #include "reader.h"
@@ -30,7 +30,7 @@
 #include <QFile>
 #include <QPluginLoader>
 #include <QFileDialog>
-#include "tageditdialog.h"
+#include "DevEditDialog.h"
 #include <QClipboard>
 #include <QInputDialog>
 #include <QScrollBar>
@@ -43,10 +43,10 @@
 
 //------------------------------------------------------------------------------
 
-const int MaxTagIOTableColumns = TagTableModel::MaxColumns;
+const int MaxTagIOTableColumns = DevTableModel::MaxColumns;
 
 
-Qt::ItemFlags TagTableModel::flags(const QModelIndex &index) const
+Qt::ItemFlags DevTableModel::flags(const QModelIndex &index) const
 {
     Qt::ItemFlags theFlags = QAbstractTableModel::flags(index);
     if (index.isValid()) {
@@ -56,7 +56,7 @@ Qt::ItemFlags TagTableModel::flags(const QModelIndex &index) const
 }
 
 
-QVariant TagTableModel::data(const QModelIndex &index, int role) const
+QVariant DevTableModel::data(const QModelIndex &index, int role) const
 {
     if (!index.isValid() ||
             index.row() < 0 || index.row() >= m_tagRows.count() ||
@@ -79,7 +79,7 @@ QVariant TagTableModel::data(const QModelIndex &index, int role) const
 }
 
 
-QVariant TagTableModel::headerData(int section, Qt::Orientation orientation, int role) const
+QVariant DevTableModel::headerData(int section, Qt::Orientation orientation, int role) const
 {
     if (role != Qt::DisplayRole) {
         return QVariant();
@@ -94,12 +94,16 @@ QVariant TagTableModel::headerData(int section, Qt::Orientation orientation, int
                 return tr("变量地址");
             case DataType:
                 return tr("数据类型");
-            case AddrOffsetBit:
-                return tr("Bit");
-            case Formula:
-                return tr("公式");
+            case ReadWrite:
+                return tr("读写");
+            case Unit:
+                return tr("单位");
             case Remark:
                 return tr("变量描述");
+            case Rate:
+                return tr("计算参数");
+            case FunctionCodes:
+                return tr("功能码");
             default:
                 Q_ASSERT(false);
         }
@@ -108,19 +112,19 @@ QVariant TagTableModel::headerData(int section, Qt::Orientation orientation, int
 }
 
 
-int TagTableModel::rowCount(const QModelIndex &index) const
+int DevTableModel::rowCount(const QModelIndex &index) const
 {
     return index.isValid() ? 0 : m_tagRows.count();
 }
 
 
-int TagTableModel::columnCount(const QModelIndex &index) const
+int DevTableModel::columnCount(const QModelIndex &index) const
 {
     return index.isValid() ? 0 : MaxTagIOTableColumns;
 }
 
 
-bool TagTableModel::setData(const QModelIndex &index,
+bool DevTableModel::setData(const QModelIndex &index,
                             const QVariant &value,
                             int role)
 {
@@ -137,7 +141,7 @@ bool TagTableModel::setData(const QModelIndex &index,
 }
 
 
-bool TagTableModel::insertRows(int row, int count, const QModelIndex&)
+bool DevTableModel::insertRows(int row, int count, const QModelIndex&)
 {
     if(count < 1) {
         return false;
@@ -151,7 +155,7 @@ bool TagTableModel::insertRows(int row, int count, const QModelIndex&)
 }
 
 
-bool TagTableModel::removeRows(int row, int count, const QModelIndex&)
+bool DevTableModel::removeRows(int row, int count, const QModelIndex&)
 {
     if(count < 1) {
         return false;
@@ -165,7 +169,7 @@ bool TagTableModel::removeRows(int row, int count, const QModelIndex&)
 }
 
 
-void TagTableModel::AppendRow(QStringList rowDat)
+void DevTableModel::AppendRow(QStringList rowDat)
 {
     int iRow = m_tagRows.size();
     beginInsertRows(QModelIndex(), iRow, iRow);
@@ -174,7 +178,7 @@ void TagTableModel::AppendRow(QStringList rowDat)
     endInsertRows();
 }
 
-void TagTableModel::AppendRows(QVector<QStringList> rowsDat)
+void DevTableModel::AppendRows(QVector<QStringList> rowsDat)
 {
     if(rowsDat.size() < 1) {
         return;
@@ -189,7 +193,7 @@ void TagTableModel::AppendRows(QVector<QStringList> rowsDat)
 }
 
 
-void TagTableModel::InsertRow(int i, QStringList rowDat)
+void DevTableModel::InsertRow(int i, QStringList rowDat)
 {
     beginInsertRows(QModelIndex(), i, i);
     QStringList it = rowDat;
@@ -198,7 +202,7 @@ void TagTableModel::InsertRow(int i, QStringList rowDat)
 }
 
 
-QStringList TagTableModel::GetRow(int i)
+QStringList DevTableModel::GetRow(int i)
 {
     QStringList it;
     if(i < m_tagRows.size()) {
@@ -208,7 +212,7 @@ QStringList TagTableModel::GetRow(int i)
 }
 
 
-void TagTableModel::UpdateRow(int i, QStringList rowDat)
+void DevTableModel::UpdateRow(int i, QStringList rowDat)
 {
     if(i < m_tagRows.size()) {
         m_tagRows.replace(i, rowDat);
@@ -218,7 +222,7 @@ void TagTableModel::UpdateRow(int i, QStringList rowDat)
     }
 }
 
-void TagTableModel::UpdateRows(QVector<QStringList> rowsDat)
+void DevTableModel::UpdateRows(QVector<QStringList> rowsDat)
 {
     m_tagRows = rowsDat;
     emit dataChanged(this->index(0, 0), this->index(m_tagRows.size() - 1, MaxTagIOTableColumns - 1));
@@ -232,7 +236,7 @@ void TagTableModel::UpdateRows(QVector<QStringList> rowsDat)
 QTableWidgetEx::QTableWidgetEx(QWidget *parent) : QTableView(parent)
 {
     setContextMenuPolicy(Qt::DefaultContextMenu);
-    m_pTagTableModel = new TagTableModel();
+    m_pDevTableModel = new DevTableModel();
     // 初始化变量表控件
     initTagsTable();
     connect(this, &QAbstractItemView::doubleClicked, this, &QTableWidgetEx::onDoubleClicked);
@@ -240,9 +244,9 @@ QTableWidgetEx::QTableWidgetEx(QWidget *parent) : QTableView(parent)
 
 QTableWidgetEx::~QTableWidgetEx()
 {
-    if(m_pTagTableModel != NULL) {
-        delete m_pTagTableModel;
-        m_pTagTableModel = NULL;
+    if(m_pDevTableModel != NULL) {
+        delete m_pDevTableModel;
+        m_pDevTableModel = NULL;
     }
 }
 
@@ -252,7 +256,7 @@ QTableWidgetEx::~QTableWidgetEx()
 ///
 void QTableWidgetEx::initTagsTable()
 {
-    this->setModel(m_pTagTableModel);
+    this->setModel(m_pDevTableModel);
     this->horizontalHeader()->setSectionsClickable(false);
     this->horizontalHeader()->setStretchLastSection(true);
     //this->horizontalHeader()->setHighlightSections(true);
@@ -266,16 +270,18 @@ void QTableWidgetEx::initTagsTable()
     this->setColumnWidth(1, 100); // 变量名称
     this->setColumnWidth(2, 100); // 变量地址
     this->setColumnWidth(3, 100); // 数据类型
-    this->setColumnWidth(4, 100); // Bit
-    this->setColumnWidth(5, 60); // 公式
-    this->setColumnWidth(6, 80); // 变量描述
+    this->setColumnWidth(4, 100); // 读写
+    this->setColumnWidth(5, 60); // 单位
+    this->setColumnWidth(7, 80); // 计算参数
+    this->setColumnWidth(6, 80); // 功能码
+    this->setColumnWidth(7, 80); // 变量描述
     this->setWordWrap(false);
     this->clearSelection();
 
     // 根据程序实例字体大小调整列宽
     QFontMetrics fm(qApp->font());
-    for(int col = 0; col < TagTableModel::MaxColumns; col++) {
-        QVariant headerData = m_pTagTableModel->headerData(col, Qt::Horizontal);
+    for(int col = 0; col < DevTableModel::MaxColumns; col++) {
+        QVariant headerData = m_pDevTableModel->headerData(col, Qt::Horizontal);
         int iWidth = fm.width(headerData.toString()) + 2 * fm.averageCharWidth();
         if(iWidth > this->columnWidth(col)) {
             this->setColumnWidth(col, iWidth);
@@ -289,7 +295,7 @@ void QTableWidgetEx::initTagsTable()
 ///
 void QTableWidgetEx::clearTable()
 {
-    m_pTagTableModel->removeRows(0, m_pTagTableModel->rowCount());
+    m_pDevTableModel->removeRows(0, m_pDevTableModel->rowCount());
 }
 
 ///
@@ -302,9 +308,10 @@ void QTableWidgetEx::updateTable()
     QVector<QStringList> rowsDat;
     foreach (Tag *pTagObj, QSoftCore::getCore()->getProjectCore()->m_tagMgr.m_vecTags) {
         QStringList rowDat;
-        RedisTag *redisTagPtr = dynamic_cast<RedisTag*>(pTagObj);
 
-        if (redisTagPtr == nullptr) {
+        DeviceTag *devTagPtr = dynamic_cast<DeviceTag*>(pTagObj);
+
+        if (devTagPtr == nullptr) {
             continue;
         }
 
@@ -315,7 +322,7 @@ void QTableWidgetEx::updateTable()
         }
         rowsDat.append(rowDat);
     }
-    m_pTagTableModel->AppendRows(rowsDat);
+    m_pDevTableModel->AppendRows(rowsDat);
 }
 
 
@@ -330,7 +337,7 @@ void QTableWidgetEx::setRowData(QStringList &rowDat, Tag *pObj)
     rowDat.clear();
     rowDat << QString::number(pObj->m_id); // 变量ID
 
-    RedisTag* pDevTagObj = static_cast<RedisTag*>(pObj);
+    DeviceTag* pDevTagObj = static_cast<DeviceTag*>(pObj);
 
     if(pDevTagObj->m_devType == "SYSTEM") {
         rowDat << QString("$%1").arg(pDevTagObj->m_name);    // 变量名称
@@ -391,9 +398,17 @@ void QTableWidgetEx::setRowData(QStringList &rowDat, Tag *pObj)
     }
     rowDat << pDevTagObj->m_addrOffset; // 地址
     rowDat << pDevTagObj->m_dataType; // 数据类型
-    rowDat << QString::number(pDevTagObj->m_addrOffsetBit); //
-    rowDat << pDevTagObj->formula; // 单位
+    QString szWriteable = "只读";
+    if (pDevTagObj->m_writeable == 0) {
+        szWriteable = tr("只读");
+    } else if (pDevTagObj->m_writeable == 1) {
+        szWriteable = tr("可读可写");
+    }
+    rowDat << szWriteable; // 读写
 
+    rowDat << pDevTagObj->m_unit; // 单位
+    rowDat << pDevTagObj->m_rate; // 变量计算
+    rowDat << pDevTagObj->m_functionCodes; // 功能码
     rowDat << pDevTagObj->m_remark; // 变量描述
 
 }
@@ -407,21 +422,7 @@ void QTableWidgetEx::setRowData(QStringList &rowDat, Tag *pObj)
 ///
 void QTableWidgetEx::onDoubleClicked(const QModelIndex &index)
 {
-    if(index.row() < 0 || index.row() > m_pTagTableModel->m_tagRows.size()) {
-        return;
-    }
-
-    QStringList rowDat = m_pTagTableModel->m_tagRows.at(index.row());
-    int iTagID = rowDat.at(0).toInt();
-    for(int i = 0; i < QSoftCore::getCore()->getProjectCore()->m_tagMgr.m_vecTags.count(); i++) {
-        Tag *pTagObj = QSoftCore::getCore()->getProjectCore()->m_tagMgr.m_vecTags[i];
-        if(pTagObj->m_id == iTagID) {
-            TagEditDialog dlg(this);
-            dlg.setWindowTitle(tr("编辑变量"));
-                updateTable();
-            }
-            return;
-        }
+    onEditTag();
 }
 
 ///
@@ -437,7 +438,7 @@ void QTableWidgetEx::contextMenuEvent(QContextMenuEvent * event)
     QModelIndexList listModelIndex = pItemSelectionModel->selectedIndexes();
     QMap<int, int> tagIDMap;
     foreach (QModelIndex index, listModelIndex) {
-        QStringList rowDat = m_pTagTableModel->m_tagRows.at(index.row());
+        QStringList rowDat = m_pDevTableModel->m_tagRows.at(index.row());
         int iTagID = rowDat.at(0).toInt();
         tagIDMap.insert(iTagID, 0);
     }
@@ -521,11 +522,11 @@ void QTableWidgetEx::mousePressEvent(QMouseEvent *event)
 ///
 void QTableWidgetEx::onAddTag()
 {
-    TagEditDialog dlg(this);
+    DevEditDialog dlg(this);
     dlg.setWindowTitle(tr("新建变量"));
     dlg.updateUI();
     if(dlg.exec() == QDialog::Accepted) {
-//        DeviceTag *pTagObj = new DeviceTag();
+        DeviceTag *pTagObj = new DeviceTag();
 //        pTagObj->fromJsonObject(dlg.getTagObj());
 //        pTagObj->m_id = QSoftCore::getCore()->getProjectCore()->m_tagMgr.allocID();
         updateTable();
@@ -543,7 +544,7 @@ void QTableWidgetEx::onCopyTag()
     QModelIndexList listModelIndex = pItemSelectionModel->selectedIndexes();
     QMap<int, int> tagIDMap;
     foreach (QModelIndex index, listModelIndex) {
-        QStringList rowDat = m_pTagTableModel->m_tagRows.at(index.row());
+        QStringList rowDat = m_pDevTableModel->m_tagRows.at(index.row());
         int iTagID = rowDat.at(0).toInt();
         if(rowDat.at(1).startsWith(QString("$"))) {
             continue;    // 系统变量不可以复制
@@ -601,7 +602,7 @@ void QTableWidgetEx::onDeleteTag()
     QModelIndexList listModelIndex = pItemSelectionModel->selectedIndexes();
     QMap<int, int> tagIDMap;
     foreach (QModelIndex index, listModelIndex) {
-        QStringList rowDat = m_pTagTableModel->m_tagRows.at(index.row());
+        QStringList rowDat = m_pDevTableModel->m_tagRows.at(index.row());
         int iTagID = rowDat.at(0).toInt();
         if(rowDat.at(1).startsWith(QString("$"))) {
             continue;    // 系统变量不可以删除
@@ -640,18 +641,18 @@ void QTableWidgetEx::onDeleteTag()
 ///
 void QTableWidgetEx::onEditTag()
 {
-    int iRow           = this->currentIndex().row();
-    QStringList rowDat = m_pTagTableModel->m_tagRows.at(iRow);
-    int iTagID         = rowDat.at(0).toInt();
-    if (rowDat.at(1).startsWith(QString("$"))) {
-        return; // 系统变量不可以编辑
+    int iRow = this->currentIndex().row();
+    QStringList rowDat = m_pDevTableModel->m_tagRows.at(iRow);
+    int iTagID = rowDat.at(0).toInt();
+    if(rowDat.at(1).startsWith(QString("$"))) {
+        return;    // 系统变量不可以编辑
     }
 
     QVector<Tag *> &tagList = QSoftCore::getCore()->getProjectCore()->m_tagMgr.m_vecTags;
     for(int i = 0; i < tagList.count(); i++) {
         Tag *pTagObj = tagList[i];
         if(pTagObj->m_id == iTagID) {
-            TagEditDialog dlg(this,pTagObj);
+            DevEditDialog dlg(this,pTagObj);
             dlg.updateUI();
             dlg.setWindowTitle(tr("编辑变量"));
             if(dlg.exec() == QDialog::Accepted) {
@@ -662,6 +663,7 @@ void QTableWidgetEx::onEditTag()
     }
     return;
 }
+
 
 ///
 /// \brief QTableWidgetEx::setActionEnable
@@ -781,19 +783,19 @@ void QTableWidgetEx::onImportFromCsv()
 //------------------------------------------------------------------------------
 
 
-TagManagerWin::TagManagerWin(QWidget *parent) : QWidget(parent)
+DevManagerWin::DevManagerWin(QWidget *parent) : QWidget(parent)
 {
     m_pTopVLayoutObj = new QVBoxLayout(this);
     m_pTopVLayoutObj->setSpacing(1);
     m_pTopVLayoutObj->setContentsMargins(1, 1, 1, 1);
 
     m_pTagMgrTableViewObj = new QTableWidgetEx(this);
-    m_pTagMgrTableViewObj->setObjectName(QString::fromUtf8("TagManagerTableView"));
+    m_pTagMgrTableViewObj->setObjectName(QString::fromUtf8("DevManagerTableView"));
 
     m_pTopVLayoutObj->addWidget(m_pTagMgrTableViewObj);
 }
 
-TagManagerWin::~TagManagerWin()
+DevManagerWin::~DevManagerWin()
 {
     if(m_pTagMgrTableViewObj != NULL) {
         delete m_pTagMgrTableViewObj;
@@ -806,7 +808,7 @@ TagManagerWin::~TagManagerWin()
 }
 
 
-bool TagManagerWin::event(QEvent *ev)
+bool DevManagerWin::event(QEvent *ev)
 {
     if(ev->type() == UserEvent::EVT_USER_SHOW_UPDATE) {
         UserEvent *pEvObj = dynamic_cast<UserEvent *>(ev);

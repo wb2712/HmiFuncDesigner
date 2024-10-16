@@ -241,6 +241,8 @@ bool QProjectCore::openFromXml(const QString &szProjFile)
         m_userAuthority.openFromXml(pProjObj);
         // 设备配置信息
         m_deviceInfo.openFromXml(pProjObj);
+        // 设备模型配置信息
+        m_devModleInfo.openFromXml(pProjObj);
 
         XMLObject *pTagsObj = pProjObj->getCurrentChild("tags");
         if(pTagsObj != NULL) {
@@ -290,6 +292,8 @@ bool QProjectCore::saveToXml(const QString &szProjFile)
     m_userAuthority.saveToXml(pProjObj);
     // 设备配置信息
     m_deviceInfo.saveToXml(pProjObj);
+    // 设备模型配置信息
+    m_devModleInfo.saveToXml(pProjObj);
 
     XMLObject *pTagsObj = new XMLObject(pProjObj);
     pTagsObj->setTagName("tags");
