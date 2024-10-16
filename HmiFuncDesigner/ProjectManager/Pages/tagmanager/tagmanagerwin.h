@@ -1,7 +1,7 @@
 ﻿#ifndef TAGMANAGERWIN_H
 #define TAGMANAGERWIN_H
 
-#include "../../../libs/shared/projdata/tag.h"
+#include "../../../libs/shared/projdata/Tag.h"
 #include "listviewex.h"
 #include "../../Public/Public.h"
 #include <QString>

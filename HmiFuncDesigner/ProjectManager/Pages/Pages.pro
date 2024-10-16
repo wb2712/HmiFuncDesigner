@@ -9,3 +9,4 @@ SUBDIRS = \
 #    script
     devmanager \
     DevModle \
+    CmdManager \

@@ -12,7 +12,7 @@ StateChangeForm::StateChangeForm(QWidget *parent) :
     m_arg = "";
     m_showArg = "";
     QStringList names;
-    QSoftCore::getCore()->getProjectCore()->m_tagMgr.getAllTagName(names);
+    QSoftCore::getCore()->getProjectCore()->m_tagMgr->getAllTagName(names);
     foreach(QString name, names) {
         QStringList idName = name.split(":");//变量id:变量名称
         if(idName.size() == 2) {

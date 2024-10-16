@@ -448,7 +448,7 @@ void MainWindow::copySystemTags()
         readFile.close();
         XMLObject xml;
         if(xml.load(szTags, NULL)) {
-            QSoftCore::getCore()->getProjectCore()->m_tagMgr.openFromXml(&xml);
+            QSoftCore::getCore()->getProjectCore()->m_tagMgr->openFromXml(&xml);
         }
     }
 }
@@ -1077,7 +1077,7 @@ bool MainWindow::buildBlockReadTags()
     QProjectCore* pCoreObj = QSoftCore::getCore()->getProjectCore();
     // Step-1 设备变量分类
     QMap<QString, QVector<Tag *> > mapDevBlockReadTags;
-    foreach (Tag *pTagObj, pCoreObj->m_tagMgr.m_vecTags) {
+    foreach (QSharedPointer<Tag> pTagObj, pCoreObj->m_tagMgr->m_vecTags) {
         // 系统变量或内存变量
 //        if(pTagObj->m_addrType == "AutoAlloc") {
 //            continue;
@@ -1085,19 +1085,19 @@ bool MainWindow::buildBlockReadTags()
         QString dev = pTagObj->m_devType;
         if(mapDevBlockReadTags.count(dev) > 0) {
             QVector<Tag *> &vecTags = mapDevBlockReadTags[dev];
-            vecTags.append(pTagObj);
+            vecTags.append(pTagObj.data());
         } else {
             QVector<Tag *> vecTags;
-            vecTags.append(pTagObj);
+            vecTags.append(pTagObj.data());
             mapDevBlockReadTags[dev] = vecTags;
         }
     }
 
-    foreach (QString dev, pCoreObj->m_tagMgr.m_mapDevBlockReadTags.keys()) {
-        qDeleteAll(pCoreObj->m_tagMgr.m_mapDevBlockReadTags[dev]);
-        pCoreObj->m_tagMgr.m_mapDevBlockReadTags[dev].clear();
+    foreach (QString dev, pCoreObj->m_tagMgr->m_mapDevBlockReadTags.keys()) {
+//        qDeleteAll(pCoreObj->m_tagMgr->m_mapDevBlockReadTags[dev]);
+        pCoreObj->m_tagMgr->m_mapDevBlockReadTags[dev].clear();
     }
-    pCoreObj->m_tagMgr.m_mapDevBlockReadTags.clear();
+    pCoreObj->m_tagMgr->m_mapDevBlockReadTags.clear();
 
     // Step-2 生成<tags>节点
     QList<QString> devs = mapDevBlockReadTags.keys();
@@ -1131,15 +1131,15 @@ bool MainWindow::buildBlockReadTags()
                     if(xmlObj.getChildren().size() > 0) {
                         QList<XMLObject* > listTagsObj = xmlObj.getChildren();
                         foreach(XMLObject* pTagObj, listTagsObj) {
-                            Tag *pObj = new Tag();
+                            QSharedPointer<Tag> pObj = QSharedPointer<Tag>(new Tag());
                             pObj->openFromXml(pTagObj);
-                            if(pCoreObj->m_tagMgr.m_mapDevBlockReadTags.count(pObj->m_devType) > 0) {
-                                QVector<Tag *> &vecTags = pCoreObj->m_tagMgr.m_mapDevBlockReadTags[pObj->m_devType];
+                            if(pCoreObj->m_tagMgr->m_mapDevBlockReadTags.count(pObj->m_devType) > 0) {
+                                QVector<QSharedPointer<Tag>> &vecTags = pCoreObj->m_tagMgr->m_mapDevBlockReadTags[pObj->m_devType];
                                 vecTags.append(pObj);
                             } else {
-                                QVector<Tag *> vecTags;
+                                QVector<QSharedPointer<Tag>> vecTags;
                                 vecTags.append(pObj);
-                                pCoreObj->m_tagMgr.m_mapDevBlockReadTags[pObj->m_devType] = vecTags;
+                                pCoreObj->m_tagMgr->m_mapDevBlockReadTags[pObj->m_devType] = vecTags;
                             }
                         }
                     }
@@ -1150,7 +1150,7 @@ bool MainWindow::buildBlockReadTags()
                 // Step-3 变量关联块读变量
                 for (int i = 0; i < idToBlockId.size(); ++i) {
                     int tagId = idToBlockId[i].first.toInt();
-                    Tag *pObj = pCoreObj->m_tagMgr.getTag(tagId);
+                    QSharedPointer<Tag> pObj = pCoreObj->m_tagMgr->getTag(tagId);
                     if(pObj) {
                         pObj->m_blockReadId = idToBlockId[i].second.toInt();
                     }

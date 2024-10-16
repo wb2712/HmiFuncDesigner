@@ -300,15 +300,15 @@ void QTableWidgetEx::updateTable()
 {
     clearTable();
     QVector<QStringList> rowsDat;
-    foreach (Tag *pTagObj, QSoftCore::getCore()->getProjectCore()->m_tagMgr.m_vecTags) {
+    foreach (QSharedPointer<Tag> pTagObj, QSoftCore::getCore()->getProjectCore()->m_tagMgr->m_vecTags) {
         QStringList rowDat;
-        RedisTag *redisTagPtr = dynamic_cast<RedisTag*>(pTagObj);
+        RedisTag *redisTagPtr = dynamic_cast<RedisTag*>(pTagObj.data());
 
         if (redisTagPtr == nullptr) {
             continue;
         }
 
-        setRowData(rowDat, pTagObj);
+        setRowData(rowDat, pTagObj.data());
         if(rowDat.isEmpty())
         {
             continue;
@@ -413,8 +413,8 @@ void QTableWidgetEx::onDoubleClicked(const QModelIndex &index)
 
     QStringList rowDat = m_pTagTableModel->m_tagRows.at(index.row());
     int iTagID = rowDat.at(0).toInt();
-    for(int i = 0; i < QSoftCore::getCore()->getProjectCore()->m_tagMgr.m_vecTags.count(); i++) {
-        Tag *pTagObj = QSoftCore::getCore()->getProjectCore()->m_tagMgr.m_vecTags[i];
+    for(int i = 0; i < QSoftCore::getCore()->getProjectCore()->m_tagMgr->m_vecTags.count(); i++) {
+        QSharedPointer<Tag>& pTagObj = QSoftCore::getCore()->getProjectCore()->m_tagMgr->m_vecTags[i];
         if(pTagObj->m_id == iTagID) {
             TagEditDialog dlg(this);
             dlg.setWindowTitle(tr("编辑变量"));
@@ -525,9 +525,9 @@ void QTableWidgetEx::onAddTag()
     dlg.setWindowTitle(tr("新建变量"));
     dlg.updateUI();
     if(dlg.exec() == QDialog::Accepted) {
-//        DeviceTag *pTagObj = new DeviceTag();
+//        DeviceQSharedPointer<Tag> pTagObj = new DeviceTag();
 //        pTagObj->fromJsonObject(dlg.getTagObj());
-//        pTagObj->m_id = QSoftCore::getCore()->getProjectCore()->m_tagMgr.allocID();
+//        pTagObj->m_id = QSoftCore::getCore()->getProjectCore()->m_tagMgr->allocID();
         updateTable();
     }
 }
@@ -555,7 +555,7 @@ void QTableWidgetEx::onCopyTag()
     while (tagIDMapIterator.hasNext()) {
         tagIDMapIterator.next();
         int iTagID = tagIDMapIterator.key();
-        foreach (Tag *pTagObj, QSoftCore::getCore()->getProjectCore()->m_tagMgr.m_vecTags) {
+        foreach (QSharedPointer<Tag> pTagObj, QSoftCore::getCore()->getProjectCore()->m_tagMgr->m_vecTags) {
             if(pTagObj->m_id == iTagID) {
                 emit copyOrCutTagToClipboard();
                 setActionEnable(TagAct_Paste, true);
@@ -577,13 +577,12 @@ void QTableWidgetEx::onPasteTag()
     QClipboard *clipboard = QApplication::clipboard();
     QString szTagObj = clipboard->text();
 
-    Tag *pTagObj = new Tag;
+    QSharedPointer<Tag> pTagObj = QSharedPointer<Tag>(new Tag);
     if(pTagObj->fromXmlNodeString(szTagObj)) {
-        pTagObj->m_id = QSoftCore::getCore()->getProjectCore()->m_tagMgr.allocID();
-        QSoftCore::getCore()->getProjectCore()->m_tagMgr.m_vecTags.append(pTagObj);
+        pTagObj->m_id = QSoftCore::getCore()->getProjectCore()->m_tagMgr->allocID();
+        QSoftCore::getCore()->getProjectCore()->m_tagMgr->m_vecTags.append(pTagObj);
         updateTable();
     } else {
-        delete pTagObj;
         pTagObj = NULL;
     }
 }
@@ -615,15 +614,15 @@ void QTableWidgetEx::onDeleteTag()
     while (tagIDMapIterator.hasPrevious()) {
         tagIDMapIterator.previous();
         iIDToDel = tagIDMapIterator.key();
-        Tag *pFindTagObj = NULL;
-        foreach (Tag *pTagObj, QSoftCore::getCore()->getProjectCore()->m_tagMgr.m_vecTags) {
+        QSharedPointer<Tag> pFindTagObj = NULL;
+        foreach (QSharedPointer<Tag> pTagObj, QSoftCore::getCore()->getProjectCore()->m_tagMgr->m_vecTags) {
             if(pTagObj->m_id == iIDToDel) {
                 pFindTagObj = pTagObj;
                 break;
             }
         }
         if(pFindTagObj != NULL) {
-            QSoftCore::getCore()->getProjectCore()->m_tagMgr.m_vecTags.removeOne(pFindTagObj);
+            QSoftCore::getCore()->getProjectCore()->m_tagMgr->m_vecTags.removeOne(pFindTagObj);
             bUpdate = true;
         }
     }
@@ -647,11 +646,11 @@ void QTableWidgetEx::onEditTag()
         return; // 系统变量不可以编辑
     }
 
-    QVector<Tag *> &tagList = QSoftCore::getCore()->getProjectCore()->m_tagMgr.m_vecTags;
+    QVector<QSharedPointer<Tag>> &tagList = QSoftCore::getCore()->getProjectCore()->m_tagMgr->m_vecTags;
     for(int i = 0; i < tagList.count(); i++) {
-        Tag *pTagObj = tagList[i];
+        QSharedPointer<Tag> pTagObj = tagList[i];
         if(pTagObj->m_id == iTagID) {
-            TagEditDialog dlg(this,pTagObj);
+            TagEditDialog dlg(this,pTagObj.data());
             dlg.updateUI();
             dlg.setWindowTitle(tr("编辑变量"));
             if(dlg.exec() == QDialog::Accepted) {
@@ -693,7 +692,7 @@ void QTableWidgetEx::onExportToCsv()
     }
 
     QtCSV::StringData varData;
-    foreach (Tag *pTagObj, QSoftCore::getCore()->getProjectCore()->m_tagMgr.m_vecTags) {
+    foreach (QSharedPointer<Tag> pTagObj, QSoftCore::getCore()->getProjectCore()->m_tagMgr->m_vecTags) {
         QStringList varRow;
 //        varRow << QString::number(pTagObj->m_id)
 //               << pTagObj->m_name
@@ -759,8 +758,8 @@ void QTableWidgetEx::onImportFromCsv()
         if(row.at(0) == "ID") {
             continue;
         }
-        Tag *pObj = new Tag();
-        pObj->m_id = QSoftCore::getCore()->getProjectCore()->m_tagMgr.allocID();
+        QSharedPointer<Tag> pObj = QSharedPointer<Tag>(new Tag());
+        pObj->m_id = QSoftCore::getCore()->getProjectCore()->m_tagMgr->allocID();
         pObj->m_name = row.at(1);
 //        pObj->m_unit = row.at(2);
 //        pObj->m_addrType = row.at(3);
@@ -772,7 +771,7 @@ void QTableWidgetEx::onImportFromCsv()
 //        pObj->m_remark = row.at(9);
 //        pObj->m_ownGroup = row.at(10);
         pObj->m_devType = row.at(11);
-        QSoftCore::getCore()->getProjectCore()->m_tagMgr.m_vecTags.append(pObj);
+        QSoftCore::getCore()->getProjectCore()->m_tagMgr->m_vecTags.append(pObj);
     }
 
     this->updateTable();

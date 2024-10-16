@@ -220,7 +220,7 @@ INCLUDEPATH += $$PWD/projdata
 DEPENDPATH += $$PWD/projdata
 SOURCES += \
     projdata/dataaes.cpp \
-    projdata/tag.cpp \
+    projdata/Tag.cpp \
     projdata/ulog.cpp \
     projdata/projectinfomanager.cpp \
     projdata/netsetting.cpp \
@@ -235,7 +235,7 @@ SOURCES += \
 
 HEADERS += \
     projdata/dataaes.h \
-    projdata/tag.h \
+    projdata/Tag.h \
     projdata/ulog.h \
     projdata/projectinfomanager.h \
     projdata/netsetting.h \

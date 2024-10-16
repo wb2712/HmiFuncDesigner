@@ -1,4 +1,4 @@
-#include "tag.h"
+#include "Tag.h"
 #include "limits.h"
 #include <QDebug>
 
@@ -28,11 +28,6 @@ void Tag::copyObject(const Tag &obj)
     m_name = obj.m_name;
 }
 
-
-void Tag::copyFromTag(Tag obj)
-{
-    m_name = obj.m_name;
-}
 
 
 bool Tag::openFromXml(XMLObject *pXmlObj)
@@ -133,22 +128,6 @@ DeviceTag &DeviceTag::operator=(const DeviceTag &obj)
 }
 
 void DeviceTag::copyObject(const DeviceTag &obj)
-{
-    m_name = obj.m_name;
-    m_unit = obj.m_unit;
-    m_addrType = obj.m_addrType;
-    m_addrOffset = obj.m_addrOffset;
-    m_functionCodes = obj.m_functionCodes;
-    m_rate = obj.m_rate;
-    m_dataType = obj.m_dataType;
-    m_writeable = obj.m_writeable;
-    m_remark = obj.m_remark;
-    m_ownGroup = obj.m_ownGroup;
-    m_devType = obj.m_devType;
-}
-
-
-void DeviceTag::copyFromTag(DeviceTag obj)
 {
     m_name = obj.m_name;
     m_unit = obj.m_unit;
@@ -308,18 +287,6 @@ void RedisTag::copyObject(const RedisTag &obj)
 }
 
 
-void RedisTag::copyFromTag(RedisTag obj)
-{
-    m_name = obj.m_name;
-    m_dataType = obj.m_dataType;
-    m_addrOffset = obj.m_addrOffset;
-    formula = obj.formula;
-    m_remark = obj.m_remark;
-    m_ownGroup = obj.m_ownGroup;
-    m_devType = obj.m_devType;
-    m_addrOffsetBit = obj.m_addrOffsetBit;
-}
-
 
 bool RedisTag::openFromXml(XMLObject *pXmlObj)
 {
@@ -422,29 +389,24 @@ TagManager::TagManager()
 
 TagManager::~TagManager()
 {
-    qDeleteAll(m_vecTags);
+//    qDeleteAll(m_vecTags);
     m_vecTags.clear();
 }
 
 
 bool TagManager::openFromXml(XMLObject *pXmlObj)
 {
-    qDeleteAll(m_vecTags);
+//    qDeleteAll(m_vecTags);
     m_vecTags.clear();
     QVector<XMLObject* > listTagsObj = pXmlObj->getCurrentChildren("tag");
     foreach(XMLObject* pTagObj, listTagsObj) {
         QMap<QString, QString> temp = pTagObj->getPropertys();
-        if(temp.value("tagType").contains("DeviceTag"))
+        if(m_classMap.contains(temp.value("tagType")))
         {
-            DeviceTag *pObj = new DeviceTag();
-
-            pObj->openFromXml(pTagObj);
-            m_vecTags.append(pObj);
-        }else if(temp.value("tagType").contains("RedisTag")){
-            RedisTag *pObj = new RedisTag();
-
-            pObj->openFromXml(pTagObj);
-            m_vecTags.append(pObj);
+            QSharedPointer<Tag> tempTag =  QSharedPointer<Tag>(m_classMap[temp.value("tagType")]->clone());
+            tempTag->openFromXml(pTagObj);
+            m_vecTags.append(tempTag);
+        }else{
 
         }
     }
@@ -455,7 +417,7 @@ bool TagManager::openFromXml(XMLObject *pXmlObj)
 bool TagManager::saveToXml(XMLObject *pXmlObj)
 {
     for(int i = 0; i < m_vecTags.count(); i++) {
-        Tag *pObj = m_vecTags.at(i);
+        QSharedPointer<Tag> pObj = m_vecTags.at(i);
         pObj->saveToXml(pXmlObj);
     }
     return true;
@@ -467,9 +429,9 @@ bool TagManager::saveBlockReadTagToXml(XMLObject *pXmlObj)
     foreach (QString dev, devs) {
         XMLObject *pDevObj = new XMLObject(pXmlObj);
         pDevObj->setTagName(dev);
-        QVector<Tag *> &vecTags = m_mapDevBlockReadTags[dev];
+        QVector<QSharedPointer<Tag>> &vecTags = m_mapDevBlockReadTags[dev];
         for(int i = 0; i < vecTags.count(); i++) {
-            Tag *pObj = vecTags.at(i);
+            QSharedPointer<Tag> pObj = vecTags.at(i);
             pObj->saveToXml(pDevObj);
         }
     }
@@ -487,7 +449,7 @@ int TagManager::allocID()
     while(notUseID < INT_MAX) {
         bool found = false;
         for(int i = 0; i < m_vecTags.count(); i++) {
-            Tag *pObj = m_vecTags.at(i);
+            QSharedPointer<Tag> pObj = m_vecTags.at(i);
             if(pObj->m_id == notUseID) {
                 found = true;
                 notUseID++;
@@ -501,10 +463,10 @@ int TagManager::allocID()
     return 0;
 }
 
-Tag *TagManager::getTag(int id)
+QSharedPointer<Tag> TagManager::getTag(int id)
 {
     for(int i = 0; i < m_vecTags.count(); i++) {
-        Tag *pObj = m_vecTags.at(i);
+        QSharedPointer<Tag> pObj = m_vecTags.at(i);
         if(pObj->m_id == id) {
             return pObj;
         }
@@ -512,10 +474,10 @@ Tag *TagManager::getTag(int id)
     return NULL;
 }
 
-Tag *TagManager::getBlockReadTag(int id)
+QSharedPointer<Tag> TagManager::getBlockReadTag(int id)
 {
     for(int i = 0; i < m_vecTags.count(); i++) {
-        Tag *pObj = m_vecTags.at(i);
+        QSharedPointer<Tag> pObj = m_vecTags.at(i);
         if(pObj->m_blockReadId == id) {
             return pObj;
         }
@@ -527,7 +489,7 @@ void TagManager::getAllTagName(QStringList &szList)
 {
     szList.clear();
     for(int i = 0; i < m_vecTags.count(); i++) {
-        Tag *pObj = m_vecTags[i];
+        QSharedPointer<Tag> pObj = m_vecTags[i];
         szList.append(QString("%1:%2").arg(pObj->m_id).arg(pObj->m_name));
     }
 }
@@ -535,7 +497,19 @@ void TagManager::getAllTagName(QStringList &szList)
 void TagManager::debugInfo()
 {
     for(int i = 0; i < m_vecTags.count(); i++) {
-        Tag *pObj = m_vecTags[i];
+        QSharedPointer<Tag> pObj = m_vecTags[i];
         qDebug() << pObj->toXmlNodeString();
+    }
+}
+
+
+bool TagManager::registryTagClass(QString className, QSharedPointer<Tag> classObj)
+{
+    if(m_classMap.contains(className))
+    {
+        return false;
+    }else{
+        m_classMap[className] = classObj;
+        return true;
     }
 }

@@ -1,5 +1,5 @@
 #include "qtablewidgetex.h"
-#include "tag.h"
+#include "Tag.h"
 #include "tageditdialog.h"
 #include <QHeaderView>
 #include <QMenu>
@@ -271,7 +271,7 @@ void QTableWidgetEx::updateTable()
 {
     clearTable();
     QVector<QStringList> rowsDat;
-    foreach (Tag *pTagObj, m_tagMgr.m_vecTags) {
+    foreach (QSharedPointer<Tag> pTagObj, m_tagMgr->m_vecTags) {
         QStringList rowDat;
         setRowData(rowDat, pTagObj);
         rowsDat.append(rowDat);
@@ -320,8 +320,8 @@ void QTableWidgetEx::onDoubleClicked(const QModelIndex &index)
 
     QStringList rowDat = m_pTagTableModel->m_tagRows.at(index.row());
     int iTagID = rowDat.at(0).toInt();
-    for(int i = 0; i < m_tagMgr.m_vecTags.count(); i++) {
-        Tag *pTagObj = m_tagMgr.m_vecTags[i];
+    for(int i = 0; i < m_tagMgr->m_vecTags.count(); i++) {
+        QSharedPointer<Tag> pTagObj = m_tagMgr->m_vecTags[i];
         if(pTagObj->m_id == iTagID) {
             TagEditDialog dlg(this);
             dlg.setWindowTitle(tr("编辑变量"));
@@ -490,14 +490,14 @@ void QTableWidgetEx::onAddTag()
     dlg.setTagObj(jsonTagObj);
     dlg.updateUI();
     if(dlg.exec() == QDialog::Accepted) {
-        Tag *pTagObj = new Tag();
+        QSharedPointer<Tag> pTagObj = new Tag();
         pTagObj->fromJsonObject(dlg.getTagObj());
-        pTagObj->m_id = m_tagMgr.allocID();
+        pTagObj->m_id = m_tagMgr->allocID();
         if(pTagObj->m_addrType == tr("自动分配")) {
             pTagObj->m_addrType = "AutoAlloc";
         }
         pTagObj->m_devType = "SYSTEM";
-        m_tagMgr.m_vecTags.append(pTagObj);
+        m_tagMgr->m_vecTags.append(pTagObj);
         updateTable();
     }
 }
@@ -521,7 +521,7 @@ void QTableWidgetEx::onCopyTag()
     while (tagIDMapIterator.hasNext()) {
         tagIDMapIterator.next();
         int iTagID = tagIDMapIterator.key();
-        foreach (Tag *pTagObj, m_tagMgr.m_vecTags) {
+        foreach (QSharedPointer<Tag> pTagObj, m_tagMgr->m_vecTags) {
             if(pTagObj->m_id == iTagID) {
                 emit copyOrCutTagToClipboard();
                 setActionEnable(TagAct_Paste, true);
@@ -543,10 +543,10 @@ void QTableWidgetEx::onPasteTag()
     QClipboard *clipboard = QApplication::clipboard();
     QString szTagObj = clipboard->text();
 
-    Tag *pTagObj = new Tag;
+    QSharedPointer<Tag> pTagObj = new Tag;
     if(pTagObj->fromXmlNodeString(szTagObj)) {
-        pTagObj->m_id = m_tagMgr.allocID();
-        m_tagMgr.m_vecTags.append(pTagObj);
+        pTagObj->m_id = m_tagMgr->allocID();
+        m_tagMgr->m_vecTags.append(pTagObj);
         updateTable();
     } else {
         delete pTagObj;
@@ -579,14 +579,14 @@ void QTableWidgetEx::onDeleteTag()
         tagIDMapIterator.previous();
         iIDToDel = tagIDMapIterator.key();
         Tag *pFindTagObj = NULL;
-        foreach (Tag *pTagObj, m_tagMgr.m_vecTags) {
+        foreach (QSharedPointer<Tag> pTagObj, m_tagMgr->m_vecTags) {
             if(pTagObj->m_id == iIDToDel) {
                 pFindTagObj = pTagObj;
                 break;
             }
         }
         if(pFindTagObj != NULL) {
-            m_tagMgr.m_vecTags.removeOne(pFindTagObj);
+            m_tagMgr->m_vecTags.removeOne(pFindTagObj);
             bUpdate = true;
         }
     }
@@ -606,7 +606,7 @@ void QTableWidgetEx::onEditTag()
     int iRow = this->currentIndex().row();
     QStringList rowDat = m_pTagTableModel->m_tagRows.at(iRow);
     int iTagID = rowDat.at(0).toInt();
-    foreach (Tag *pTagObj, m_tagMgr.m_vecTags) {
+    foreach (QSharedPointer<Tag> pTagObj, m_tagMgr->m_vecTags) {
         if(pTagObj->m_id == iTagID) {
             TagEditDialog dlg(this);
             QMap<QString, QStringList> mapDevToAddrType;

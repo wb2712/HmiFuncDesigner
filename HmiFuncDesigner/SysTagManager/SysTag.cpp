@@ -42,7 +42,7 @@ SysTag::SysTag(QWidget *parent) : QWidget(parent)
 
         XMLObject xml;
         if(xml.load(szTags, NULL)) {
-            m_pSysTagTableViewObj->m_tagMgr.openFromXml(&xml);
+            m_pSysTagTableViewObj->m_tagMgr->openFromXml(&xml);
             m_pSysTagTableViewObj->updateTable();
         }
     }
@@ -72,7 +72,7 @@ void SysTag::closeEvent(QCloseEvent *event)
     XMLObject tagObjs;
     tagObjs.setTagName("tags");
     tagObjs.setProperty("application_version", "V1.0.0");
-    m_pSysTagTableViewObj->m_tagMgr.saveToXml(&tagObjs);
+    m_pSysTagTableViewObj->m_tagMgr->saveToXml(&tagObjs);
 
     QFile writeFile(szTagFile);
     if (!writeFile.open(QIODevice::WriteOnly)) {

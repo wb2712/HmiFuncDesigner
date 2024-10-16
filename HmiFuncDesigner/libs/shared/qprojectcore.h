@@ -10,7 +10,7 @@
 #include "./projdata/userauthority.h"
 #include "./projdata/deviceinfo.h"
 #include "./projdata/pictureresourcemanager.h"
-#include "./projdata/tag.h"
+#include "./projdata/Tag.h"
 #include "./projdata/script.h"
 #include "sharedlibglobal.h"
 #include "./projdata/DevModleInfo.h"
@@ -98,7 +98,7 @@ public:
     UserAuthority m_userAuthority; // 用户权限
     DeviceInfo m_deviceInfo; // 通讯设备配置信息
     PictureResourceManager m_pictureResourceMgr; // 图片资源管理
-    TagManager m_tagMgr; // 标签变量
+    TagManager* m_tagMgr; // 标签变量
     Script m_script; // 脚本
     TFileHeader m_headerObj;
     DevModleInfo m_devModleInfo; // 设备模型配置信息

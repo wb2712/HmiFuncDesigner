@@ -145,6 +145,17 @@ void ProjectTreeView::updateUI()
     m_pProjectItemObj->appendRow(m_pTagMgrObj);
 
 
+    m_pCmdMgrObj = new QStandardItem(QIcon(":/images/pj_sys.png"), tr("命令管理"));
+    m_pCmdMgrObj->setEditable(false);
+    szListUserData.clear();
+    szListUserData << QString("CmdMgr").toUpper()
+                   << m_pCmdMgrObj->text()
+                   << "";
+    m_pCmdMgrObj->setData(szListUserData, Qt::UserRole + 1);
+    m_pProjectItemObj->appendRow(m_pCmdMgrObj);
+
+
+
     m_pDataBaseManagerObj = new QStandardItem(QIcon(":/images/pj_sys.png"), tr("数据库管理"));
     m_pDataBaseManagerObj->setEditable(false);
     szListUserData.clear();

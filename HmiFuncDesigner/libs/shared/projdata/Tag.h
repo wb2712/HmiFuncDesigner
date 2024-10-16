@@ -9,6 +9,8 @@
 #include <QJsonValue>
 #include "../xmlobject.h"
 #include "../sharedlibglobal.h"
+#include <QSharedPointer>
+
 
 class SHAREDLIB_EXPORT Tag
 {
@@ -18,8 +20,11 @@ public:
     Tag &operator=(const Tag &obj);
 
     void copyObject(const Tag &obj);
-    void copyFromTag(Tag obj);
+//    void copyFromTag(Tag obj);
     virtual ~Tag();
+    virtual Tag* clone() const {
+        return new Tag();
+   };
 
     virtual bool openFromXml(XMLObject *pXmlObj);
     virtual bool saveToXml(XMLObject *pXmlObj);
@@ -53,16 +58,20 @@ public:
     virtual ~DeviceTag();
 
     void copyObject(const DeviceTag &obj) ;
-    void copyFromTag(DeviceTag obj);
+//    void copyFromTag(DeviceTag obj);
 
-    virtual bool openFromXml(XMLObject *pXmlObj);
-    virtual bool saveToXml(XMLObject *pXmlObj);
+    Tag* clone() const override {
+         return new DeviceTag();
+    }
 
-    virtual QString toXmlNodeString();
-    virtual bool fromXmlNodeString(const QString &szNode);
+    bool openFromXml(XMLObject *pXmlObj) override;
+    bool saveToXml(XMLObject *pXmlObj) override;
 
-    virtual QJsonObject toJsonObject();
-    virtual void fromJsonObject(QJsonObject jsonObj);
+    QString toXmlNodeString() override;
+    bool fromXmlNodeString(const QString &szNode) override;
+
+    QJsonObject toJsonObject() override;
+    void fromJsonObject(QJsonObject jsonObj) override;
 
 public:
     ////////////////////<基本信息>//////////////////////////
@@ -78,7 +87,7 @@ public:
     QString m_ownGroup = ""; // 变量所属组 
 
 private:
-    virtual bool saveToXmlInner(XMLObject *pXmlObj);
+    bool saveToXmlInner(XMLObject *pXmlObj) override;
 };
 
 
@@ -91,16 +100,19 @@ public:
     virtual ~RedisTag();
 
     void copyObject(const RedisTag &obj) ;
-    void copyFromTag(RedisTag obj);
 
-    virtual bool openFromXml(XMLObject *pXmlObj);
-    virtual bool saveToXml(XMLObject *pXmlObj);
+    Tag* clone() const override {
+         return new RedisTag();
+    }
 
-    virtual QString toXmlNodeString();
-    virtual bool fromXmlNodeString(const QString &szNode);
+    bool openFromXml(XMLObject *pXmlObj) override;
+    bool saveToXml(XMLObject *pXmlObj) override;
 
-    virtual QJsonObject toJsonObject();
-    virtual void fromJsonObject(QJsonObject jsonObj);
+    QString toXmlNodeString() override;
+    bool fromXmlNodeString(const QString &szNode) override;
+
+    QJsonObject toJsonObject() override;
+    void fromJsonObject(QJsonObject jsonObj) override;
 
 public:
     ////////////////////<基本信息>//////////////////////////
@@ -119,33 +131,42 @@ public:
     QString m_devType = ""; // 变量设备类型-设备协议名称, 内存变量-MEMORY, 系统变量-SYSTEM
 
 private:
-    virtual bool saveToXmlInner(XMLObject *pXmlObj);
+    bool saveToXmlInner(XMLObject *pXmlObj) override;
 };
-
-
 
 
 class SHAREDLIB_EXPORT TagManager
 {
 public:
-    TagManager();
+    static TagManager& GetInstance() {
+        static TagManager instance;  // 局部静态变量，线程安全
+        return instance;
+    }
+
+    TagManager(const TagManager&) = delete;
+    TagManager& operator=(const TagManager&) = delete;
     ~TagManager();
+protected:
+    TagManager();
+public:
 
     bool openFromXml(XMLObject *pXmlObj);
     bool saveToXml(XMLObject *pXmlObj);
     bool saveBlockReadTagToXml(XMLObject *pXmlObj);
     //分配一个 ID
     int allocID();
-    Tag *getTag(int id);
-    Tag *getBlockReadTag(int id);
+    QSharedPointer<Tag> getTag(int id);
+    QSharedPointer<Tag> getBlockReadTag(int id);
     void getAllTagName(QStringList &szList);
     void debugInfo();
+    bool registryTagClass(QString className, QSharedPointer<Tag> classObj);
 
 public:
-    QVector<Tag *> m_vecTags;
+    QVector<QSharedPointer<Tag>> m_vecTags;
     // key-device name, value-tags
-    QMap<QString, QVector<Tag *> > m_mapDevBlockReadTags;
+    QMap<QString, QVector<QSharedPointer<Tag>> > m_mapDevBlockReadTags;
+    QMap<QString, QSharedPointer<Tag> > m_classMap;
 };
-Q_DECLARE_METATYPE(TagManager)
+//Q_DECLARE_METATYPE(TagManager)
 
 #endif // TAG_H

@@ -43,6 +43,7 @@ private:
     QStandardItem *m_pComDeviceObj = NULL;
     QStandardItem *m_pNetDeviceObj = NULL;
     QStandardItem *m_pTagMgrObj = NULL;
+    QStandardItem *m_pCmdMgrObj = NULL;
     QStandardItem *m_pDevTagObj = NULL;
     QList<QStandardItem *> m_pDevVariableTabListObj;
     QStandardItem *m_pTmpVariableObj = NULL;

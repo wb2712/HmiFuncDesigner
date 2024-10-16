@@ -3,7 +3,7 @@
 #include <QMessageBox>
 #include "CEmsGlobalDefines.h"
 #include "qsoftcore.h"
-#include "../shared/projdata/tag.h"
+#include "../shared/projdata/Tag.h"
 
 template<typename T>
 int stringToEnum(const QString &str) {
@@ -221,17 +221,17 @@ void DevEditDialog::on_btnSave_clicked()
 
     if(!m_objTag)
     {
-        DeviceTag *pTagObj = new DeviceTag();
+        QSharedPointer<Tag> pTagObj = QSharedPointer<Tag>(new DeviceTag());
         pTagObj->fromJsonObject(getTagObj());
-        pTagObj->m_id = QSoftCore::getCore()->getProjectCore()->m_tagMgr.allocID();
+        pTagObj->m_id = QSoftCore::getCore()->getProjectCore()->m_tagMgr->allocID();
 
         if(pTagObj->m_devType == "MEMORY") { // 内存变量
-            if(pTagObj->m_addrType == tr("自动分配")) {
-                pTagObj->m_addrType = "AutoAlloc";
-            }
+//            if(pTagObj->m_addrType == tr("自动分配")) {
+//                pTagObj->m_addrType = "AutoAlloc";
+//            }
         }
 
-        QSoftCore::getCore()->getProjectCore()->m_tagMgr.m_vecTags.append(pTagObj);
+        QSoftCore::getCore()->getProjectCore()->m_tagMgr->m_vecTags.append(pTagObj);
     }else{
         m_objTag->fromJsonObject(getTagObj());
     }

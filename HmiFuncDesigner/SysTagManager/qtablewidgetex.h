@@ -6,7 +6,7 @@
 #include <QMap>
 #include <QTimer>
 #include <QVector>
-#include "tag.h"
+#include "Tag.h"
 
 class TagTableModel : public QAbstractTableModel
 {

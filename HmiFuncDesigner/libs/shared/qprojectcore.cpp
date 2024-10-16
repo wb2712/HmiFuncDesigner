@@ -25,6 +25,8 @@ QProjectCore::QProjectCore(QObject *parent)
 
     connect(m_pPageManagerObj, SIGNAL(host_name_changed(QAbstractHost*)),
             this, SLOT(onFormRefresh(QAbstractHost*)));
+
+    m_tagMgr = &TagManager::GetInstance();
 }
 
 
@@ -247,7 +249,7 @@ bool QProjectCore::openFromXml(const QString &szProjFile)
         XMLObject *pTagsObj = pProjObj->getCurrentChild("tags");
         if(pTagsObj != NULL) {
             // 标签变量组
-            m_tagMgr.openFromXml(pTagsObj);
+            m_tagMgr->openFromXml(pTagsObj);
         }
 
         // 脚本
@@ -298,12 +300,12 @@ bool QProjectCore::saveToXml(const QString &szProjFile)
     XMLObject *pTagsObj = new XMLObject(pProjObj);
     pTagsObj->setTagName("tags");
     // 标签变量组
-    m_tagMgr.saveToXml(pTagsObj);
+    m_tagMgr->saveToXml(pTagsObj);
 
     XMLObject *pBlockReadTagsObj = new XMLObject(pProjObj);
     pBlockReadTagsObj->setTagName("block_tags");
     // 块读标签变量组
-    m_tagMgr.saveBlockReadTagToXml(pBlockReadTagsObj);
+    m_tagMgr->saveBlockReadTagToXml(pBlockReadTagsObj);
 
     // 脚本
     m_script.saveToXml(pProjObj);
@@ -364,7 +366,7 @@ void QProjectCore::getAllTagName(QStringList &varList, const QString &type)
     varList.clear();
     QString szType = type.toUpper();
 
-    foreach(Tag *pTagObj, m_tagMgr.m_vecTags) {
+    foreach(QSharedPointer<Tag> pTagObj, m_tagMgr->m_vecTags) {
         //-------------设备变量------------------//
         if(szType == "ALL" || szType == "IO") {
             if(pTagObj->m_devType != "MEMORY" && pTagObj->m_devType != "SYSTEM") {

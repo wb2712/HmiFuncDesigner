@@ -2,7 +2,7 @@
 #include "ui_TagEditDialog.h"
 #include <QMessageBox>
 #include "qsoftcore.h"
-#include "../shared/projdata/tag.h"
+#include "../shared/projdata/Tag.h"
 
 
 TagEditDialog::TagEditDialog(QWidget *parent, Tag* objTag)
@@ -219,9 +219,9 @@ void TagEditDialog::on_btnSave_clicked()
     m_jsonTagObj["dev"] = ui->cboDev->currentText();
 
     if(m_objTag){
-        RedisTag *pTagObj = new RedisTag();
+        QSharedPointer<Tag> pTagObj = QSharedPointer<Tag>(new RedisTag());
         pTagObj->fromJsonObject(getTagObj());
-        pTagObj->m_id = QSoftCore::getCore()->getProjectCore()->m_tagMgr.allocID();
+        pTagObj->m_id = QSoftCore::getCore()->getProjectCore()->m_tagMgr->allocID();
 
         if(pTagObj->m_devType == "MEMORY") { // 内存变量
     //        if(pTagObj->m_addrType == tr("自动分配")) {
@@ -229,7 +229,7 @@ void TagEditDialog::on_btnSave_clicked()
     //        }
         }
 
-        QSoftCore::getCore()->getProjectCore()->m_tagMgr.m_vecTags.append(pTagObj);
+        QSoftCore::getCore()->getProjectCore()->m_tagMgr->m_vecTags.append(pTagObj);
     }else{
         m_objTag->fromJsonObject(getTagObj());
     }
