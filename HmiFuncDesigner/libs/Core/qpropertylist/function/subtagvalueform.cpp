@@ -12,7 +12,7 @@ SubTagValueForm::SubTagValueForm(QWidget *parent) :
     m_args.clear();
     m_showArgs.clear();
     QStringList names;
-    QSoftCore::getCore()->getProjectCore()->m_tagMgr.getAllTagName(names);
+    QSoftCore::getCore()->getProjectCore()->m_tagMgr->getAllTagName(names);
     foreach(QString name, names) {
         QStringList idName = name.split(":");//变量id:变量名称
         if(idName.size() == 2) {
