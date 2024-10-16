@@ -17,8 +17,13 @@ class CORELIB_EXPORT DevEditDialog : public QDialog
     Q_OBJECT
 
 public:
+<<<<<<<< HEAD:HmiFuncDesigner/libs/Core/DevEditDialog/DevEditDialog.h
     explicit DevEditDialog(QWidget *parent = nullptr, Tag* objTag = nullptr);
     ~DevEditDialog();
+========
+    explicit TagEditDialog(QWidget *parent = nullptr, Tag* objTag = nullptr);
+    ~TagEditDialog();
+>>>>>>>> a6b67f6a92c88d3c35b4f5ddab27a2718ebd7dd1:HmiFuncDesigner/libs/core/TagEditDialog.h
     // 更新UI
     void updateUI();
 
@@ -40,6 +45,7 @@ private slots:
     void on_cboAddrType2_currentTextChanged(const QString &szAddrType);
     // 设备改变
     void on_cboDev_currentIndexChanged(const QString &szDev);
+    void on_btnSave_clicked();
 
     void on_btnSave_clicked();
 
@@ -52,7 +58,11 @@ private:
     QMap<QString, QStringList> m_mapAddrTypeToDataType;
     QMap<QString, QMap<QString, quint32>> m_mapAddrTypeToLimit;
 
+<<<<<<<< HEAD:HmiFuncDesigner/libs/Core/DevEditDialog/DevEditDialog.h
     DeviceTag* m_objTag = nullptr;
+========
+    RedisTag* m_objTag = nullptr;
+>>>>>>>> a6b67f6a92c88d3c35b4f5ddab27a2718ebd7dd1:HmiFuncDesigner/libs/core/TagEditDialog.h
 };
 
 #endif // DEVEDITDIALOG_H
