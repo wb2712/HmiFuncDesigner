@@ -22,7 +22,7 @@ SUBDIRS += \
     libs \
     Devices \
     ProjectManager \
-    SysTagManager #\
+#    SysTagManager #\
 #    RtdbView \
 #    NativeRtdbView #\
 #    RegisterTool \    # 通用授权工具
