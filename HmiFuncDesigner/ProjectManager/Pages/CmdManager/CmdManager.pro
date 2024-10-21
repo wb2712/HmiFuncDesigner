@@ -38,15 +38,15 @@ INCLUDEPATH += \
 
 HEADERS += \
     ../../Public/userevent.h \
-    CmdEditDialog/CmdEditDialog.h \
     CmdEditDialog/CmdTag.h \
+    CmdEditDialog/CmdEditDialog.h \
     CmdManagerPlugin.h \
     CmdManagerWin.h
 
 SOURCES += \
     ../../Public/userevent.cpp \
-    CmdEditDialog/CmdEditDialog.cpp \
     CmdEditDialog/CmdTag.cpp \
+    CmdEditDialog/CmdEditDialog.cpp \
     CmdManagerPlugin.cpp \
     CmdManagerWin.cpp
 
@@ -60,3 +60,6 @@ FORMS += \
 
 DISTFILES += \
     CmdManagerPlugin.json
+
+
+message("LIBS CmdManager  $$LIBS")

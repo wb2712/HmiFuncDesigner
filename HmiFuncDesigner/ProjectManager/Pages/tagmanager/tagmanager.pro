@@ -53,3 +53,6 @@ FORMS +=
 
 DISTFILES += \
     tagmanagerplugin.json
+
+
+message("LIBS tagmanager  $$LIBS")

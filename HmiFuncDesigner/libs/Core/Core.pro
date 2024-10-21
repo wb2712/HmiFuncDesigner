@@ -332,3 +332,5 @@ FORMS += \
 
 RESOURCES += \
     images.qrc
+
+message("LIBS core  $$LIBS")

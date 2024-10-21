@@ -47,3 +47,6 @@ FORMS += \
 
 DISTFILES += \
     DevModlePlugin.json
+
+
+message("LIBS DevModle  $$LIBS")

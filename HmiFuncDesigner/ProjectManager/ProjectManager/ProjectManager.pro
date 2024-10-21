@@ -34,12 +34,18 @@ CONFIG(debug, debug|release) { #debug
     }
 }
 
-LIBS += -L$$LINK_LIBRARY_PATH -lcsv$${LIB_SUFFIX}
-LIBS += -L$$LINK_LIBRARY_PATH -lqscintilla2_qt$${QT_MAJOR_VERSION}$${LIB_SUFFIX}
-LIBS += -L$$LINK_LIBRARY_PATH -lutils$${LIB_SUFFIX}
-LIBS += -L$$LINK_LIBRARY_PATH -lcore
-LIBS += -L$$LINK_LIBRARY_PATH -lshared
-LIBS += -L$$LINK_LIBRARY_PATH -lgradienteditor
+BUILD_DIR = $$clean_path($$OUT_PWD)
+LIB_DIR = $$clean_path($$BUILD_DIR/../../../lib)
+#LIBS += -L$$clean_path($$LIB_DIR) -lshared
+#message("LIBS----  $$LIBS")
+
+LIBS += -L$$clean_path($$LIB_DIR) -lcsv$${LIB_SUFFIX}
+LIBS += -L$$clean_path($$LIB_DIR) -lqscintilla2_qt$${QT_MAJOR_VERSION}$${LIB_SUFFIX}
+LIBS += -L$$clean_path($$LIB_DIR) -lutils$${LIB_SUFFIX}
+LIBS += -L$$clean_path($$LIB_DIR) -lcore
+LIBS += -L$$clean_path($$LIB_DIR) -lshared
+LIBS += -L$$clean_path($$LIB_DIR) -lgradienteditor
+
 
 unix {
     # suppress the default RPATH if you wish
@@ -49,6 +55,7 @@ unix {
 
 SOURCES += main.cpp\
     ../Public/userevent.cpp \
+    EmsConfigExport.cpp \
     MainWindow.cpp \
     ProjectTreeView.cpp \
     TableviewDelegate.cpp \
@@ -67,6 +74,7 @@ SOURCES += main.cpp\
 HEADERS  += MainWindow.h \
     ../Public/userevent.h \
     ../Public/Public.h \
+    EmsConfigExport.h \
     ProjectTreeView.h \
     TableviewDelegate.h \
     ProjectDownloadDialog.h \
@@ -112,3 +120,5 @@ DISTFILES += \
 CODECFORTR = UTF-8
 TRANSLATIONS += chinese.ts
 
+
+message("LIBS ProjectManager $$LIBS")

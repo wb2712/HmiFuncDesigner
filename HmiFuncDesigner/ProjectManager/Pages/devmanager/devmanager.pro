@@ -54,3 +54,6 @@ FORMS +=
 
 DISTFILES += \
     devmanagerplugin.json
+
+
+message("LIBS devmanager  $$LIBS")

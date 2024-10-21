@@ -246,3 +246,5 @@ HEADERS += \
     projdata/script.h \
     projdata/helper.h \
     projdata/DevModleInfo.h \
+
+message("LIBS shared  $$LIBS")

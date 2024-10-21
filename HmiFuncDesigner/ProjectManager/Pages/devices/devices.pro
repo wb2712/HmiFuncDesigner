@@ -44,3 +44,6 @@ FORMS +=
 
 DISTFILES += \
     devicesplugin.json
+
+
+message("LIBS devices  $$LIBS")
