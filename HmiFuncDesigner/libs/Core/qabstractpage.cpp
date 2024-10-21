@@ -5,11 +5,12 @@ void QAbstractPage::initPlugin()
 {
     m_undo_stack = new QUndoStack;
     m_widget = NULL;
-    createWidget(); // 创建页面插件
+    createWidget();
     if(m_widget != NULL) {
         m_widget->setVisible(false);
     }
 }
+
 
 QWidget *QAbstractPage::getWidget()
 {
