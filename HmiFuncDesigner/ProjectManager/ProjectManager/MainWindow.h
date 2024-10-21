@@ -77,6 +77,8 @@ private slots:
     void onSetOpenProjPassword();
     // 退出
     void onExit();
+    // 导出
+    void EmsConfigExport();
 
     // 模拟仿真
     void onSlotSimulate();

@@ -4,10 +4,13 @@
 #include <QIcon>
 #include <QVariant>
 
+
 void TagManagerPlugin::createWidget()
 {
     m_widget = new TagManagerWin;
     m_widget->setProperty("panelwidget", true);
+
+    TagManager::GetInstance().registryTagClass("RedisTag", QSharedPointer<Tag>(new RedisTag()));
 }
 
 QString TagManagerPlugin::getPageName()

@@ -10,6 +10,7 @@
 #include "../xmlobject.h"
 #include "../sharedlibglobal.h"
 #include <QSharedPointer>
+#include <mutex>
 
 
 class SHAREDLIB_EXPORT Tag
@@ -138,16 +139,14 @@ private:
 class SHAREDLIB_EXPORT TagManager
 {
 public:
-    static TagManager& GetInstance() {
-        static TagManager instance;  // 局部静态变量，线程安全
-        return instance;
-    }
-
-    TagManager(const TagManager&) = delete;
-    TagManager& operator=(const TagManager&) = delete;
+    static TagManager& GetInstance();
     ~TagManager();
+
 protected:
     TagManager();
+    TagManager(const TagManager&) = delete;
+    TagManager& operator=(const TagManager&) = delete;
+
 public:
 
     bool openFromXml(XMLObject *pXmlObj);

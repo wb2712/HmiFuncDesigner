@@ -51,6 +51,9 @@
 #include <QCryptographicHash>
 #include <QStackedWidget>
 #include <QDebug>
+#include "EmsConfigExport.h"
+
+
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent),
@@ -225,6 +228,14 @@ void MainWindow::createActions()
         QSoftCore::getCore()->insertAction("Project.Exit", pActObj);
     }
 
+    // EMS导出
+    pActObj = new QAction(QIcon(":/images/programexit.png"), tr("EMS导出"), NULL);
+    if(pActObj) {
+        connect(pActObj, &QAction::triggered, this, &MainWindow::EmsConfigExport);
+        QSoftCore::getCore()->insertAction("Project.EmsExport", pActObj);
+    }
+
+
     //-----------------------------<视图>---------------------------------------
 
     // 视图工具栏
@@ -371,7 +382,7 @@ void MainWindow::createToolbars()
     pToolBarObj->addAction(QSoftCore::getCore()->getAction("Project.Close"));
     pToolBarObj->addAction(QSoftCore::getCore()->getAction("Project.Save"));
     pToolBarObj->addAction(QSoftCore::getCore()->getAction("Project.Exit"));
-
+    pToolBarObj->addAction(QSoftCore::getCore()->getAction("Project.EmsExport"));
     pToolBarObj->addSeparator();
 
     //-----------------------------<工具>----------------------------------
@@ -691,6 +702,17 @@ void MainWindow::onExit()
 {
     onSaveProject();
     qApp->exit();
+}
+
+
+/**
+    * @brief MainWindow::onExit
+    * @details 退出
+    */
+void MainWindow::EmsConfigExport()
+{
+    EmsConfigExport::Export();
+
 }
 
 

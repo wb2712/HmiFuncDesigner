@@ -94,12 +94,6 @@ void Tag::fromJsonObject(QJsonObject jsonObj)
 }
 
 
-
-
-
-
-
-
 //==============================================================================================
 
 
@@ -380,6 +374,11 @@ void RedisTag::fromJsonObject(QJsonObject jsonObj)
 }
 
 //==============================================================================================
+
+TagManager& TagManager::GetInstance() {
+    static TagManager instance;  // 局部静态变量，线程安全
+    return instance;
+}
 
 
 TagManager::TagManager()

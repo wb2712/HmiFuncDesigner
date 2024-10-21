@@ -8,6 +8,8 @@ void DevManagerPlugin::createWidget()
 {
     m_widget = new DevManagerWin;
     m_widget->setProperty("panelwidget", true);
+    TagManager::GetInstance().registryTagClass("DeviceTag", QSharedPointer<Tag>(new DeviceTag()));
+
 }
 
 QString DevManagerPlugin::getPageName()

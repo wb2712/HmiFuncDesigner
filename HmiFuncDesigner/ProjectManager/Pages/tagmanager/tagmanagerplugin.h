@@ -18,7 +18,8 @@ public:
     bool getEnabled(); // 工程关闭的时候是否启用这个页面
 
 protected:
-    void createWidget();
+    void createWidget(); // 创建插件对应的页面控件
+
 };
 
 #endif

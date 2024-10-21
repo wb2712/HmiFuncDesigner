@@ -5,6 +5,10 @@
 #include <QMessageBox>
 #include <QDebug>
 #include "qsoftcore.h"
+#include "../shared/projdata/Tag.h"
+#include "Pages/CmdManager/CmdEditDialog/CmdTag.h"
+
+
 
 ProjectTreeView::ProjectTreeView(QWidget *parent) : QTreeView(parent)
 {
@@ -133,9 +137,7 @@ void ProjectTreeView::updateUI()
 
     m_pProjectItemObj->appendRow(m_pDeviceObj);
 
-
-
-    m_pTagMgrObj = new QStandardItem(QIcon(":/images/pj_sys.png"), tr("变量管理"));
+    m_pTagMgrObj = new QStandardItem(QIcon(":/images/pj_sys.png"), tr("Redis点表管理"));
     m_pTagMgrObj->setEditable(false);
     szListUserData.clear();
     szListUserData << QString("TagMgr").toUpper()
@@ -143,7 +145,6 @@ void ProjectTreeView::updateUI()
                    << "";
     m_pTagMgrObj->setData(szListUserData, Qt::UserRole + 1);
     m_pProjectItemObj->appendRow(m_pTagMgrObj);
-
 
     m_pCmdMgrObj = new QStandardItem(QIcon(":/images/pj_sys.png"), tr("命令管理"));
     m_pCmdMgrObj->setEditable(false);

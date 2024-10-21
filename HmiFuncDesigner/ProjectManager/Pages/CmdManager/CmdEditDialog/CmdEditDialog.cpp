@@ -1,62 +1,39 @@
 #include "CmdEditDialog.h"
 #include "ui_CmdEditDialog.h"
 #include <QMessageBox>
-//#include "CEmsGlobalDefines.h"
+// #include "CEmsGlobalDefines.h"
 #include "qsoftcore.h"
 #include "../shared/projdata/Tag.h"
 #include "CmdTag.h"
+#include <QJsonArray>
 
+// template<typename T>
+// int stringToEnum(const QString &str) {
+//     QMetaEnum metaEnum = QMetaEnum::fromType<T>();
+//     int enumValue = metaEnum.keyToValue(str.toUtf8().constData());
+//     return enumValue; // 返回对应的整型值
+// }
 
-//template<typename T>
-//int stringToEnum(const QString &str) {
-//    QMetaEnum metaEnum = QMetaEnum::fromType<T>();
-//    int enumValue = metaEnum.keyToValue(str.toUtf8().constData());
-//    return enumValue; // 返回对应的整型值
-//}
-
-CmdEditDialog::CmdEditDialog(QWidget *parent, Tag *objTag)
-    : QDialog(parent),
-      ui(new Ui::CmdEditDialog)
+CmdEditDialog::CmdEditDialog(QWidget *parent, Tag *objTag) : QDialog(parent), ui(new Ui::CmdEditDialog)
 {
     ui->setupUi(this);
     this->setWindowFlags(this->windowFlags() & (~Qt::WindowContextHelpButtonHint));
 
-    if(objTag)
-    {
-        m_objTag = static_cast<CmdTag*>(objTag);
+    if (objTag) {
+        m_objTag     = static_cast<CmdTag *>(objTag);
         m_jsonTagObj = m_objTag->toJsonObject();
     }
-    m_mapDevToAddrType.clear();
-    m_mapAddrTypeToAddrTypeAlias.clear();
-    m_mapAddrTypeToSubAddrType.clear();
-    m_mapAddrTypeToDataType.clear();
+
     ui->tabWidget->setCurrentIndex(0);
 
-    ui->cboDataType->setCurrentIndex(-1);
     ui->editTagDesc->setPlainText("");
-
-    QStringList szListDataType;
-    szListDataType << tr("0x01") // 读取线圈状态
-                   << tr("0x02") // 读取离散输入状态
-                   << tr("0x03") // 读取保持寄存器
-                   << tr("0x04") // 读取输入寄存器
-                   << tr("0x05") // 写单个线圈
-                   << tr("0x06") // 写单个保持寄存器
-                   << tr("0x0F") // 写多个线圈
-                   << tr("0x10"); // 写多个保持寄存器
-
-    ui->FunctionCodes->addItems(szListDataType);
-    ui->FunctionCodes->setCurrentIndex(-1);
-
-    ui->cboDataType->setCurrentIndex(-1);
-    ui->cboReadWriteType->setCurrentIndex(-1);
 
     QStringList szListDev;
 
     DevModleInfo &deviceInfo = QSoftCore::getCore()->getProjectCore()->m_devModleInfo;
-    for(int i = 0; i < deviceInfo.m_listDevModleInfoObject.count(); i++) {
+    for (int i = 0; i < deviceInfo.m_listDevModleInfoObject.count(); i++) {
         DevModleInfoObject *pObj = deviceInfo.m_listDevModleInfoObject.at(i);
-        if(pObj->m_deviceType == "DevModle") {
+        if (pObj->m_deviceType == "DevModle") {
             szListDev << pObj->m_name;
         }
     }
@@ -64,6 +41,9 @@ CmdEditDialog::CmdEditDialog(QWidget *parent, Tag *objTag)
     ui->cboDev->addItems(szListDev);
     ui->cboDev->setCurrentIndex(-1);
     ui->btnSave->setEnabled(false);
+
+    connect(ui->add, &QToolButton::clicked, this, &CmdEditDialog::insertRows);
+    connect(ui->remove, &QToolButton::clicked, this, &CmdEditDialog::removeRows);
 
 }
 
@@ -82,7 +62,6 @@ void CmdEditDialog::setTagObj(QJsonObject &jsonTag)
     m_jsonTagObj = jsonTag;
 }
 
-
 ///
 /// \brief CmdEditDialog::getTagObj
 /// @details 返回变量信息
@@ -93,7 +72,6 @@ QJsonObject CmdEditDialog::getTagObj()
     return m_jsonTagObj;
 }
 
-
 ///
 /// \brief CmdEditDialog::setAddrTypeLimit
 /// \details 设置地址类型的限制范围
@@ -101,9 +79,7 @@ QJsonObject CmdEditDialog::getTagObj()
 ///
 void CmdEditDialog::setAddrTypeLimit(QMap<QString, QMap<QString, quint32>> mapLimit)
 {
-    m_mapAddrTypeToLimit = mapLimit;
 }
-
 
 ///
 /// \brief CmdEditDialog::on_btnOk_clicked
@@ -128,69 +104,52 @@ void CmdEditDialog::on_btnCancel_clicked()
 }
 
 ///
-/// \brief CmdEditDialog::on_cboAddrType_currentTextChanged
-/// \details 地址类型改变
-/// \param szAddrType
-///
-void CmdEditDialog::on_cboAddrType_currentTextChanged(const QString &szAddrType)
-{
-    if(szAddrType == "") {
-        return;
-    }
-//    QStringList szListSubAddrType;
-//    szListSubAddrType = m_mapAddrTypeToSubAddrType[szAddrType];
-//    ui->cboAddrType2->clear();
-//    ui->cboAddrType2->addItems(szListSubAddrType);
-//    ui->cboAddrType2->setCurrentIndex(-1);
-
-//    ui->cboAddrType2->setEnabled((szListSubAddrType.size() > 0));
-//    ui->editAddrOffset2->setEnabled((szListSubAddrType.size() > 0));
-
-    ui->cboDataType->clear();
-    ui->cboDataType->addItems(m_mapAddrTypeToDataType[szAddrType]);
-}
-
-void CmdEditDialog::on_cboAddrType2_currentTextChanged(const QString &szAddrType)
-{
-    if(szAddrType == "") {
-        return;
-    }
-    ui->cboDataType->clear();
-    ui->cboDataType->addItems(m_mapAddrTypeToDataType[szAddrType]);
-}
-
-///
 /// \brief CmdEditDialog::updateUI
 /// \details 更新UI
 ///
 void CmdEditDialog::updateUI()
 {
+    // 切换到第一个 Tab 页
     ui->tabWidget->setCurrentIndex(0);
 
-//    QStringList listDevs = m_mapDevToAddrType.keys();
-//    ui->cboDev->clear();
-//    ui->cboDev->addItems(listDevs);
-
-    if(!m_jsonTagObj.isEmpty()) {
+    // 确保 JSON 对象不为空
+    if (!m_jsonTagObj.isEmpty()) {
+        // 设置设备类型
         ui->cboDev->setCurrentText(m_jsonTagObj["dev"].toString());
 
-        ui->editTagName->setText(m_jsonTagObj["name"].toString());
-
-        ui->cboAddrType->setCurrentText(m_jsonTagObj["addr"].toString());
-        ui->editAddrOffset->setText(m_jsonTagObj["offset"].toString());
-        ui->FunctionCodes->setCurrentText(m_jsonTagObj["functionCodes"].toString());
-        ui->rate->setText(m_jsonTagObj["rate"].toString());
-        ui->cboDataType->setCurrentText(m_jsonTagObj["type"].toString());
-        ui->editTagUnit->setText(m_jsonTagObj["unit"].toString());
-        ui->cboReadWriteType->setCurrentText(m_jsonTagObj["writeable"].toString());
-        ui->cboDev->setCurrentText(m_jsonTagObj["dev"].toString());
-
-        QString szDataType = m_jsonTagObj["type"].toString();
-        if(szDataType != "") {
-            ui->cboDataType->setCurrentText(szDataType);
-        }
-        ui->cboReadWriteType->setCurrentIndex(m_jsonTagObj["writeable"].toInt());
+        // 设置标签描述
         ui->editTagDesc->setPlainText(m_jsonTagObj["remark"].toString());
+
+        // 设置命令类型（根据 on_btnSave_clicked 的逻辑）
+        ui->cmdType->setText(m_jsonTagObj["cmdType"].toString());
+
+        // 清空表格并重新填充
+        ui->tableWidget->clearContents();
+        ui->tableWidget->setRowCount(0); // 清除现有的行
+
+        // 获取 cmdArg 数组
+        QJsonArray cmdArgsArray = m_jsonTagObj["cmdArg"].toArray();
+
+        // 遍历 cmdArg 数组中的每个对象并插入到 tableWidget 中
+        for (int i = 0; i < cmdArgsArray.size(); ++i) {
+            QJsonObject cmdArgObj = cmdArgsArray[i].toObject();
+
+            // 新增一行
+            int row = ui->tableWidget->rowCount();
+            ui->tableWidget->insertRow(row);
+
+            // 设置 argAddr 列
+            QTableWidgetItem *argAddrItem = new QTableWidgetItem(cmdArgObj["argAddr"].toString());
+            ui->tableWidget->setItem(row, 0, argAddrItem);
+
+            // 设置 argType 列
+            QTableWidgetItem *argTypeItem = new QTableWidgetItem(cmdArgObj["argType"].toString());
+            ui->tableWidget->setItem(row, 1, argTypeItem);
+
+            // 设置 argValue 列
+            QTableWidgetItem *argValueItem = new QTableWidgetItem(cmdArgObj["argValue"].toString());
+            ui->tableWidget->setItem(row, 2, argValueItem);
+        }
     }
 }
 
@@ -201,37 +160,69 @@ void CmdEditDialog::updateUI()
 ///
 void CmdEditDialog::on_cboDev_currentIndexChanged(const QString &szDev)
 {
-//    QStringList szListAddrType;
-//    szListAddrType = m_mapDevToAddrType[szDev];
-//    ui->cboAddrType->clear();
-//    ui->cboAddrType->addItems(szListAddrType);
-//    ui->cboAddrType->setCurrentIndex(0);
+    //    QStringList szListAddrType;
+    //    szListAddrType = m_mapDevToAddrType[szDev];
+    //    ui->cboAddrType->clear();
+    //    ui->cboAddrType->addItems(szListAddrType);
+    //    ui->cboAddrType->setCurrentIndex(0);
 }
 
 void CmdEditDialog::on_btnSave_clicked()
 {
-    m_jsonTagObj["name"] = ui->editTagName->text();
-    m_jsonTagObj["addr"] = ui->cboAddrType->currentText();
-    m_jsonTagObj["offset"] = ui->editAddrOffset->text();
-    m_jsonTagObj["functionCodes"] = ui->FunctionCodes->currentText();
-    m_jsonTagObj["rate"] = ui->rate->text();
-    m_jsonTagObj["type"] = ui->cboDataType->currentText();
-    m_jsonTagObj["unit"] = ui->editTagUnit->text();
-    m_jsonTagObj["writeable"] = ui->cboReadWriteType->currentIndex();
+    m_jsonTagObj["name"] = ui->cmdName->text();
     m_jsonTagObj["remark"] = ui->editTagDesc->toPlainText();
-    m_jsonTagObj["dev"] = ui->cboDev->currentText();
+    m_jsonTagObj["dev"]    = ui->cboDev->currentText();
 
-    if(!m_objTag)
-    {
+    m_jsonTagObj["cmdType"] = ui->cmdType->text();
+
+    // 创建一个 QJsonArray 用于存储多组数据
+    QJsonArray groupArray;
+
+    int newRow = ui->tableWidget->rowCount();
+
+    for (int i = 0; i < newRow; ++i) {
+        QJsonObject group1;
+        if (ui->tableWidget->item(i, 0)) {
+            group1["argAddr"] = ui->tableWidget->item(i, 0)->text();
+        }
+        if (ui->tableWidget->item(i, 1)) {
+            group1["argType"] = ui->tableWidget->item(i, 1)->text();
+        }
+        if (ui->tableWidget->item(i, 2)) {
+            group1["argValue"] = ui->tableWidget->item(i, 2)->text();
+        }
+        groupArray.append(group1);
+    }
+
+    m_jsonTagObj["cmdArg"] = groupArray;
+
+    if (!m_objTag) {
         QSharedPointer<Tag> pTagObj = QSharedPointer<Tag>(new CmdTag());
         pTagObj->fromJsonObject(getTagObj());
         pTagObj->m_id = QSoftCore::getCore()->getProjectCore()->m_tagMgr->allocID();
 
-        if(pTagObj->m_devType == "MEMORY") { // 内存变量
+        if (pTagObj->m_devType == "MEMORY") { // 内存变量
         }
 
         QSoftCore::getCore()->getProjectCore()->m_tagMgr->m_vecTags.append(pTagObj);
-    }else{
+    } else {
         m_objTag->fromJsonObject(getTagObj());
     }
+}
+
+void CmdEditDialog::insertRows()
+{
+    int newRow = ui->tableWidget->rowCount();
+    ui->tableWidget->insertRow(newRow); // 增加一行
+
+    // 在第一列添加普通文本项
+    ui->tableWidget->setItem(newRow, 0, new QTableWidgetItem(""));
+    ui->tableWidget->setItem(newRow, 1, new QTableWidgetItem(""));
+    ui->tableWidget->setItem(newRow, 2, new QTableWidgetItem(""));
+}
+
+void CmdEditDialog::removeRows()
+{
+    int newRow = ui->tableWidget->rowCount();
+    ui->tableWidget->removeRow(newRow-1);
 }

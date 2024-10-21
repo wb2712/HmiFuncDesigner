@@ -3,11 +3,15 @@
 #include <qplugin.h>
 #include <QIcon>
 #include <QVariant>
+#include "CmdEditDialog/CmdTag.h"
+
 
 void CmdManagerPlugin::createWidget()
 {
     m_widget = new CmdManagerWin;
     m_widget->setProperty("panelwidget", true);
+
+    TagManager::GetInstance().registryTagClass("CmdTag", QSharedPointer<Tag>(new CmdTag()));
 }
 
 QString CmdManagerPlugin::getPageName()

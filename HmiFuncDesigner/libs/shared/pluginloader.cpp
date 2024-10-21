@@ -48,7 +48,9 @@ void PluginLoader::loadPlugin(const QString &xml_file_name)
                         }
                         plugins.insert(name, plugin);
                         m_plugins.insert(type, plugins);
+
                         plugin->initPlugin();
+
                     } else {
                         delete plugin;
                     }

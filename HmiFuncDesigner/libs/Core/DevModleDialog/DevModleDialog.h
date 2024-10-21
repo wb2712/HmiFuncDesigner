@@ -7,9 +7,7 @@
 #include "./qpropertylist/qpropertylistview.h"
 #include <QDialog>
 
-
-namespace Ui
-{
+namespace Ui {
 class DevModleDialog;
 }
 
@@ -43,10 +41,12 @@ private slots:
     void on_btnExit_clicked();
     void on_btnDeviceSelect_clicked();
     void on_btnProtocolSelect_clicked();
+    void insertRows();
+    void removeRows();
 
 private:
-    QString getValue2ByValue1(const QString &szVal1, QVector<QPair<QString, QString>>& properties);
-    void setValue2ByValue1(const QString &szVal1, const QString &szVal2, QVector<QPair<QString, QString>>& properties);
+    QString getValue2ByValue1(const QString &szVal1, QVector<QPair<QString, QString>> &properties);
+    void setValue2ByValue1(const QString &szVal1, const QString &szVal2, QVector<QPair<QString, QString>> &properties);
 
 public:
     QString m_szDeviceName;

@@ -26,14 +26,13 @@ public:
     enum Column {
         TagID = 0,
         Name = 1,
-        Addr = 2,
-        DataType = 3,
-        ReadWrite = 4,
-        Unit = 5,
-        Rate = 6,
-        FunctionCodes = 7,
+        CmdType = 2,
+        Arg1 = 3,
+        Arg2 = 4,
+        Arg3 = 5,
+        Arg4 = 6,
+        Arg5 = 7,
         Remark = 8,
-
         MaxColumns = 9
     };
 

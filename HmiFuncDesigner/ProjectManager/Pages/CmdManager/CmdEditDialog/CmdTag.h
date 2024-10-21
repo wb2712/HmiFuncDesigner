@@ -2,8 +2,7 @@
 #define CMDTAG_H
 #include "../shared/projdata/Tag.h"
 
-
-class  CmdTag: public Tag
+class CmdTag : public Tag
 {
 public:
     CmdTag();
@@ -11,35 +10,34 @@ public:
     CmdTag &operator=(const CmdTag &obj);
     virtual ~CmdTag();
 
-    void copyObject(const CmdTag &obj) ;
+    void copyObject(const CmdTag &obj);
 
-    Tag* clone() const override {
-         return new CmdTag();
+    Tag *clone() const override
+    {
+        return new CmdTag();
     }
 
-    virtual bool openFromXml(XMLObject *pXmlObj);
-    virtual bool saveToXml(XMLObject *pXmlObj);
+    bool openFromXml(XMLObject *pXmlObj) override;
+    bool saveToXml(XMLObject *pXmlObj) override;
 
-    virtual QString toXmlNodeString();
-    virtual bool fromXmlNodeString(const QString &szNode);
+    QString toXmlNodeString() override;
+    bool fromXmlNodeString(const QString &szNode) override;
 
-    virtual QJsonObject toJsonObject();
-    virtual void fromJsonObject(QJsonObject jsonObj);
+    QJsonObject toJsonObject() override;
+    void fromJsonObject(QJsonObject jsonObj) override;
 
 public:
     ////////////////////<基本信息>//////////////////////////
 
-        QString m_addrOffset = "0"; // 地址偏移
-        QString m_dataType = ""; // 数据类型
-        int m_addrOffsetBit = 0; // bit 取位
-        QString formula = ""; // 计算公式
-        QString m_remark = ""; // 变量描述
-        QString m_ownGroup = ""; // 变量所属组
-        QString m_devType = ""; // 变量设备类型-设备协议名称, 内存变量-MEMORY, 系统变量-SYSTEM
+    QString m_cmdType   = ""; // 命令类型
+    QVector<QVector<QString>> m_args; // 命令参数
+
+    QString m_remark   = ""; // 变量描述
+    QString m_ownGroup = ""; // 变量所属组
+    QString m_devType  = ""; // 变量设备类型-设备协议名称, 内存变量-MEMORY, 系统变量-SYSTEM
 
 private:
-    virtual bool saveToXmlInner(XMLObject *pXmlObj);
+    bool saveToXmlInner(XMLObject *pXmlObj) override;
 };
-
 
 #endif // CMDTAG_H

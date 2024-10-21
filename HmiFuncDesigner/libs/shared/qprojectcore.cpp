@@ -12,7 +12,6 @@
 #include <QDir>
 #include <QScriptEngine>
 
-
 QProjectCore::QProjectCore(QObject *parent)
     : QObject(parent),
       m_pProjectHostObj(new QProjectHost),
@@ -23,8 +22,7 @@ QProjectCore::QProjectCore(QObject *parent)
     m_szProjPath = "";
     m_szProjName = "";
 
-    connect(m_pPageManagerObj, SIGNAL(host_name_changed(QAbstractHost*)),
-            this, SLOT(onFormRefresh(QAbstractHost*)));
+    connect(m_pPageManagerObj, SIGNAL(host_name_changed(QAbstractHost*)), this, SLOT(onFormRefresh(QAbstractHost*)));
 
     m_tagMgr = &TagManager::GetInstance();
 }

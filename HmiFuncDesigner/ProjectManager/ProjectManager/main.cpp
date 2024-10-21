@@ -10,9 +10,15 @@
 #include <QTextCodec>
 #include <QFont>
 #include <QTranslator>
+#include <QLibrary>
+#include <QDebug>
+#include <windows.h>
+#include "../shared/projdata/Tag.h"
+
 
 int main(int argc, char *argv[])
 {
+
 #if (QT_VERSION >= QT_VERSION_CHECK(5, 6, 0))
     QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
 #endif

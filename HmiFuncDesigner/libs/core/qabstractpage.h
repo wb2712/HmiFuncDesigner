@@ -8,12 +8,12 @@
 
 #define PAGE_PLUGIN_NAME "Plugin.Page"
 
-
 class CORELIB_EXPORT QAbstractPage : public QAbstractPlugin
 {
     Q_OBJECT
 public:
     void initPlugin();
+
     QString getPluginType();
     QWidget* getWidget(); // 获取页面控件
     virtual QIcon getPageIcon() = 0; // 获取页面的图标
@@ -23,7 +23,8 @@ public:
     virtual QUndoStack* getUndoStack();
 
 protected:
-    virtual void createWidget() = 0; // 创建插件对应的页面控件
+    virtual void createWidget() = 0;
+
 
 protected:
     QWidget* m_widget; // 页面控件

@@ -12,7 +12,6 @@ class SHAREDLIB_EXPORT DevModleInfoObject
 public:
     explicit DevModleInfoObject()
     {
-
     }
 
     DevModleInfoObject(const DevModleInfoObject &obj)
@@ -32,50 +31,48 @@ public:
 
     void copyObject(const DevModleInfoObject &obj)
     {
-        m_id = obj.m_id;
-        m_deviceType = obj.m_deviceType;
-        m_name = obj.m_name;
-        m_deviceName = obj.m_deviceName;
-        m_frameLen = obj.m_frameLen;
-        m_protocol = obj.m_protocol;
-        m_link = obj.m_link;
-        m_stateVar = obj.m_stateVar;
-        m_frameTimePeriod = obj.m_frameTimePeriod;
-        m_ctrlVar = obj.m_ctrlVar;
+        m_id                  = obj.m_id;
+        m_deviceType          = obj.m_deviceType;
+        m_name                = obj.m_name;
+        m_deviceName          = obj.m_deviceName;
+        m_frameLen            = obj.m_frameLen;
+        m_protocol            = obj.m_protocol;
+        m_link                = obj.m_link;
+        m_stateVar            = obj.m_stateVar;
+        m_frameTimePeriod     = obj.m_frameTimePeriod;
+        m_ctrlVar             = obj.m_ctrlVar;
         m_dynamicOptimization = obj.m_dynamicOptimization;
-        m_remotePort = obj.m_remotePort;
-        m_portParameters = obj.m_portParameters;
-        m_properties = obj.m_properties;
+        m_remotePort          = obj.m_remotePort;
+        m_portParameters      = obj.m_portParameters;
+        m_properties          = obj.m_properties;
 
-        
-        dev_Name = obj.dev_Name;
-        Category = obj.Category;
-        ArchType = obj.ArchType;
-        BusType = obj.BusType;
-        ProtoType = obj.ProtoType;
-        ClassID = obj.ClassID;
+        dev_Name        = obj.dev_Name;
+        Category        = obj.Category;
+        ArchType        = obj.ArchType;
+        BusType         = obj.BusType;
+        ProtoType       = obj.ProtoType;
+        ClassID         = obj.ClassID;
         dev_manufactory = obj.dev_manufactory;
-        dev_Type = obj.dev_Type;
+        dev_Type        = obj.dev_Type;
 
         ArchType_2 = obj.ArchType_2;
-        BusType_2 = obj.BusType_2;
-        ClassID_2 = obj.ClassID_2;
+        BusType_2  = obj.BusType_2;
+        ClassID_2  = obj.ClassID_2;
 
-
-        num = obj.num;
-        devices = obj.devices;
-        PowerCtrl = obj.PowerCtrl;
+        num         = obj.num;
+        devices     = obj.devices;
+        PowerCtrl   = obj.PowerCtrl;
         MonitorCtrl = obj.MonitorCtrl;
-        PCS = obj.PCS;
-        BAMS = obj.BAMS;
-        Pump = obj.Pump;
-        PumpCtrl = obj.PumpCtrl;
+        PCS         = obj.PCS;
+        BAMS        = obj.BAMS;
+        Pump        = obj.Pump;
+        PumpCtrl    = obj.PumpCtrl;
     }
 
 public:
     int m_id;
-    QString m_deviceType; //COM, NET, BUS, OPC
-    QString m_name; // 显示名称
+    QString m_deviceType; // COM, NET, BUS, OPC
+    QString m_name;       // 显示名称
     QString m_deviceName; // 设备插件名称
     int m_frameLen;
     QString m_protocol;
@@ -88,6 +85,7 @@ public:
     QString m_portParameters;
     QString m_properties; // 设备私有属性
 
+    bool isCollect;
     QString dev_Name;
     int Category;
     int ArchType;
@@ -96,9 +94,19 @@ public:
     QString ClassID;
     QString dev_manufactory;
     QString dev_Type;
+
+    QString commDev;
+    QString devModel;
+
+    bool isUpload;
     int ArchType_2;
     int BusType_2;
     QString ClassID_2;
+
+    QString commDev_2;
+    QString devModel_2;
+
+    QVector<QVector<QString>> customParameters;
 
     int num;
     QString devices;
@@ -108,7 +116,6 @@ public:
     QString BAMS;
     QString Pump;
     QString PumpCtrl;
-
 };
 
 /*
