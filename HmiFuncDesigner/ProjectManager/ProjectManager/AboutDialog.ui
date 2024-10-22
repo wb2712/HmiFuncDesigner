@@ -36,12 +36,7 @@
       </font>
      </property>
      <property name="text">
-      <string>工程管理器 V1.0.1
-
-联系方式 Contact
-Email：VelsonWang@qq.com
-QQ:706409617
-QQ交流群:568268522</string>
+      <string>工程管理器 V1.0.1</string>
      </property>
     </widget>
    </item>

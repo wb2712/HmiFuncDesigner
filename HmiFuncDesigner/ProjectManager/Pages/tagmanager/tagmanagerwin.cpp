@@ -327,7 +327,7 @@ void QTableWidgetEx::setRowData(QStringList &rowDat, Tag *pObj)
     }
     rowDat << pDevTagObj->m_addrOffset;                     // 地址
     rowDat << pDevTagObj->m_dataType;                       // 数据类型
-    rowDat << QString::number(pDevTagObj->m_addrOffsetBit); //
+    rowDat << ((pDevTagObj->m_dataType ==  QString("B")) ? QString::number(pDevTagObj->m_addrOffsetBit) : ""); //
     rowDat << pDevTagObj->formula;                          // 单位
 
     rowDat << pDevTagObj->m_remark; // 变量描述

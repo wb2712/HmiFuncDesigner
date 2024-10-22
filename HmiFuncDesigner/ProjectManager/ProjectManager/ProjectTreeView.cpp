@@ -159,12 +159,14 @@ void ProjectTreeView::updateUI()
 
     m_pDataBaseManagerObj = new QStandardItem(QIcon(":/images/pj_sys.png"), tr("数据库管理"));
     m_pDataBaseManagerObj->setEditable(false);
+    m_pDataBaseManagerObj->setFlags(m_pDataBaseManagerObj->flags() & ~(Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable));
     szListUserData.clear();
     szListUserData << QString("DataBaseManager").toUpper() << m_pDataBaseManagerObj->text();
     m_pDataBaseManagerObj->setData(szListUserData, Qt::UserRole + 1);
 
     m_pRealTimeDatabaseObj = new QStandardItem(QIcon(":/images/db_rtdbview.png"), tr("实时数据库"));
     m_pRealTimeDatabaseObj->setEditable(false);
+    m_pRealTimeDatabaseObj->setFlags(m_pRealTimeDatabaseObj->flags() & ~(Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable));
     szListUserData.clear();
     szListUserData << QString("RTDBWin").toUpper()
                    << m_pRealTimeDatabaseObj->text()
@@ -182,6 +184,7 @@ void ProjectTreeView::updateUI()
 
     m_pLogicProgramObj = new QStandardItem(QIcon(":/images/pm_script.png"), tr("逻辑编程"));
     m_pLogicProgramObj->setEditable(false);
+    m_pLogicProgramObj->setFlags(m_pLogicProgramObj->flags() & ~(Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable));
     szListUserData.clear();
     szListUserData << QString("LogicProgram").toUpper()
                    << m_pLogicProgramObj->text()
@@ -190,6 +193,7 @@ void ProjectTreeView::updateUI()
 
     m_pScriptEditorObj = new QStandardItem(QIcon(":/images/pj_script.png"), tr("脚本编辑器"));
     m_pScriptEditorObj->setEditable(false);
+    m_pScriptEditorObj->setFlags(m_pScriptEditorObj->flags() & ~(Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable));
     szListUserData.clear();
     szListUserData << QString("ScriptEditor").toUpper()
                    << m_pScriptEditorObj->text()

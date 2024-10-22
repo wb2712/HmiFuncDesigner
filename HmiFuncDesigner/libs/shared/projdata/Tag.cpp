@@ -349,7 +349,7 @@ QJsonObject RedisTag::toJsonObject()
     jsonTagObj.insert("name", QJsonValue(m_name));
     jsonTagObj.insert("type", QJsonValue(m_dataType));
     jsonTagObj.insert("offset", QJsonValue(m_addrOffset));
-    jsonTagObj.insert("offsetBit", QJsonValue(m_addrOffsetBit));
+    jsonTagObj.insert("offsetBit", QJsonValue(QString::number(m_addrOffsetBit)));
     jsonTagObj.insert("formula", QJsonValue(formula));
     jsonTagObj.insert("remark", QJsonValue(m_remark));
     jsonTagObj.insert("group", QJsonValue(m_ownGroup));
@@ -365,7 +365,7 @@ void RedisTag::fromJsonObject(QJsonObject jsonObj)
         m_name = jsonObj["name"].toString();
         m_dataType = jsonObj["type"].toString();
         m_addrOffset = jsonObj["offset"].toString();
-        m_addrOffsetBit = jsonObj["offsetBit"].toInt();
+        m_addrOffsetBit = jsonObj["offsetBit"].toString().toInt();
         formula = jsonObj["formula"].toString();
         m_remark = jsonObj["remark"].toString();
         m_ownGroup = jsonObj["group"].toString();

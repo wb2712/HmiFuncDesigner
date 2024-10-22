@@ -45,6 +45,9 @@ LIBS += -L$$clean_path($$LIB_DIR) -lutils$${LIB_SUFFIX}
 LIBS += -L$$clean_path($$LIB_DIR) -lcore
 LIBS += -L$$clean_path($$LIB_DIR) -lshared
 LIBS += -L$$clean_path($$LIB_DIR) -lgradienteditor
+LIBS += -L$$clean_path($$LIB_DIR)/pages -lCmdManager
+
+
 
 
 unix {

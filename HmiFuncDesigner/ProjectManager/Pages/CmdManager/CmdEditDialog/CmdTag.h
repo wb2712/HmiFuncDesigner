@@ -34,7 +34,6 @@ public:
 
     QString m_remark   = ""; // 变量描述
     QString m_ownGroup = ""; // 变量所属组
-    QString m_devType  = ""; // 变量设备类型-设备协议名称, 内存变量-MEMORY, 系统变量-SYSTEM
 
 private:
     bool saveToXmlInner(XMLObject *pXmlObj) override;

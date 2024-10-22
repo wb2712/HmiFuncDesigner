@@ -114,6 +114,7 @@ void CmdEditDialog::updateUI()
 
     // 确保 JSON 对象不为空
     if (!m_jsonTagObj.isEmpty()) {
+        ui->cmdName->setText(m_jsonTagObj["name"].toString());
         // 设置设备类型
         ui->cboDev->setCurrentText(m_jsonTagObj["dev"].toString());
 
@@ -225,4 +226,5 @@ void CmdEditDialog::removeRows()
 {
     int newRow = ui->tableWidget->rowCount();
     ui->tableWidget->removeRow(newRow-1);
+    ui->tableWidget->setRowCount(newRow-1);
 }

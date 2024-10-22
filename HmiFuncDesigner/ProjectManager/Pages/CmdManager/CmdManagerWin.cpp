@@ -248,12 +248,12 @@ void QTableWidgetEx::initTagsTable()
     this->verticalHeader()->hide();
     this->setColumnWidth(0, 60);  // 变量ID
     this->setColumnWidth(1, 100); // 变量名称
-    this->setColumnWidth(2, 100); // 命令类型
+    this->setColumnWidth(2, 60); // 命令类型
     this->setColumnWidth(3, 100); // 参数1
     this->setColumnWidth(4, 100); // 参数2
-    this->setColumnWidth(5, 60);  // 参数3
-    this->setColumnWidth(6, 80);  // 参数4
-    this->setColumnWidth(7, 80);  // 参数5
+    this->setColumnWidth(5, 100);  // 参数3
+    this->setColumnWidth(6, 100);  // 参数4
+    this->setColumnWidth(7, 100);  // 参数5
     this->setColumnWidth(8, 80);  // 变量描述
     this->setWordWrap(false);
     this->clearSelection();

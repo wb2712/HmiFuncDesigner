@@ -181,7 +181,7 @@ void CmdTag::fromJsonObject(QJsonObject jsonObj)
 
         // 获取 cmdArg 数组
         QJsonArray cmdArgArray = jsonObj["cmdArg"].toArray();
-
+        m_args.clear();
         // 解析每个 QJsonObject 到 QVector<QString>
         for (int i = 0; i < cmdArgArray.size(); ++i) {
             QJsonObject obj = cmdArgArray[i].toObject();

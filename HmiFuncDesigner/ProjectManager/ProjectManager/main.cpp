@@ -28,8 +28,8 @@ int main(int argc, char *argv[])
         return !app.sendMessage("project manager start " + app.applicationDirPath());
 
     app.setOrganizationName("JasonWangCtd");
-    app.setApplicationName("ProjectManager");
-    app.setApplicationDisplayName("ProjectManager");
+    app.setApplicationName("EmsCfgManager");
+    app.setApplicationDisplayName("EmsCfgManager");
     app.setApplicationVersion(QString("V%1").arg(VER_FILE));
     app.setWindowIcon(QIcon(":/images/appicon.png"));
 

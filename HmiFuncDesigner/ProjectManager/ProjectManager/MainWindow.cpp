@@ -141,8 +141,8 @@ MainWindow::MainWindow(QWidget *parent)
     int screenHeight = rect.height();
     this->resize(screenWidth * 3 / 4, screenHeight * 3 / 4);
     Helper::WidgetMoveCenter(this);
-    setWindowTitle(tr("HmiFuncDesigner组态软件"));
-    this->m_pStatusBarObj->showMessage(tr("欢迎使用HmiFuncDesigner组态软件"));
+    setWindowTitle(tr("KgEmsCfg 配置软件"));
+    this->m_pStatusBarObj->showMessage(tr("欢迎使用 KgEmsCfg 配置软件"));
     connect(m_pTabProjectMgrObj, SIGNAL(currentChanged(int)), SLOT(onSlotTabProjectMgrCurChanged(int)));
     onSlotTabProjectMgrCurChanged(0);
 }
@@ -711,7 +711,7 @@ void MainWindow::onExit()
     */
 void MainWindow::EmsConfigExport()
 {
-    EmsConfigExport::Export();
+    EmsConfigExport::GetInstance().Export();
 
 }
 

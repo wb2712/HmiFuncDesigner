@@ -426,16 +426,16 @@ void DevModleManagerWin::onSlotNewStation()
 
 bool DevModleManagerWin::event(QEvent *ev)
 {
-//    if(ev->type() == UserEvent::EVT_USER_SHOW_UPDATE) {
-//        UserEvent *pEvObj = dynamic_cast<UserEvent *>(ev);
-//        if(pEvObj) {
-//            m_szItemName = pEvObj->data().toString();
-//        }
-//        listViewUpdate();
-//        return true;
-//    } else if(ev->type() == UserEvent::EVT_USER_HIDE_UPDATE) {
-//        return true;
-//    }
+    if(ev->type() == UserEvent::EVT_USER_SHOW_UPDATE) {
+        UserEvent *pEvObj = dynamic_cast<UserEvent *>(ev);
+        if(pEvObj) {
+            m_szItemName = pEvObj->data().toString();
+        }
+        listViewUpdate();
+        return true;
+    } else if(ev->type() == UserEvent::EVT_USER_HIDE_UPDATE) {
+        return true;
+    }
     return QWidget::event(ev);
 }
 

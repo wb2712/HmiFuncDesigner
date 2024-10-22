@@ -178,6 +178,7 @@ void TagEditDialog::updateUI()
         }
 
         ui->editAddrOffset->setText(m_jsonTagObj["offset"].toString());
+        ui->editAddrOffsetBit->setText(m_jsonTagObj["offsetBit"].toString());
 
         QString szDataType = m_jsonTagObj["type"].toString();
         if(szDataType != "") {
@@ -218,7 +219,7 @@ void TagEditDialog::on_btnSave_clicked()
     m_jsonTagObj["remark"] = ui->editTagDesc->toPlainText();
     m_jsonTagObj["dev"] = ui->cboDev->currentText();
 
-    if(m_objTag){
+    if(!m_objTag){
         QSharedPointer<Tag> pTagObj = QSharedPointer<Tag>(new RedisTag());
         pTagObj->fromJsonObject(getTagObj());
         pTagObj->m_id = QSoftCore::getCore()->getProjectCore()->m_tagMgr->allocID();

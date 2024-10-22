@@ -118,18 +118,14 @@ public:
 public:
     ////////////////////<基本信息>//////////////////////////
 
-//    QString m_unit = ""; // 变量单位
-//    QString m_addrType = ""; // 地址类型
+
     QString m_addrOffset = "0"; // 地址偏移
-//    QString m_addrType2 = ""; // 地址类型2
-//    QString m_addrOffset2 = "0"; // 地址偏移2
+
     QString m_dataType = ""; // 数据类型
-//    int m_writeable = 1; // 读写类型  0-只读, 1-可写
     int m_addrOffsetBit = 0; // bit 取位
     QString formula = ""; // 计算公式
     QString m_remark = ""; // 变量描述
     QString m_ownGroup = ""; // 变量所属组
-    QString m_devType = ""; // 变量设备类型-设备协议名称, 内存变量-MEMORY, 系统变量-SYSTEM
 
 private:
     bool saveToXmlInner(XMLObject *pXmlObj) override;
