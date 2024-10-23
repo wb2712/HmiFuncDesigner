@@ -10,3 +10,4 @@ SUBDIRS = \
     devmanager \
     DevModle \
     CmdManager \
+    BmsManager

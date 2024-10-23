@@ -9,6 +9,7 @@
 #include <QMessageBox>
 #include <QFileDialog>
 #include "../Pages/CmdManager/CmdEditDialog/CmdTag.h"
+#include "../Pages/BmsManager/BmsEditDialog/BmsTag.h"
 
 EmsConfigExport &EmsConfigExport::GetInstance()
 {
@@ -209,59 +210,65 @@ void EmsConfigExport::ExportDevModleCfg()
 
             // 输出字符串
             QString output;
-            QString dev_out_put;
-            QString cmd_out_put;
+            //  电池堆  电池组 单独处理
+            if (pObj->Category == 5 || pObj->Category == 6) {
+                ExportBmsDevCfg(tag_map, pObj->dev_Name, output);
+            } else {
 
-            // 配置文件的起始部分
-            dev_out_put += "{\n  \"start\",\n";
-            cmd_out_put += "{\n  \"start\",\n";
+                QString dev_out_put;
+                QString cmd_out_put;
 
-            // 根据设备名称获取关联的标签
-            const QVector<QSharedPointer<Tag>> &tags = tag_map[pObj->dev_Name];
+                // 配置文件的起始部分
+                dev_out_put += "{\n  \"start\",\n";
+                cmd_out_put += "{\n  \"start\",\n";
 
-            for (auto it : tags) {
-                if (it->m_tagType == "DeviceTag") {
-                    // 将标签转换为 DeviceTag 类型
-                    DeviceTag *dev_tag = dynamic_cast<DeviceTag *>(it.data());
+                // 根据设备名称获取关联的标签
+                const QVector<QSharedPointer<Tag>> &tags = tag_map[pObj->dev_Name];
 
-                    // 如果转换成功，拼接输出字符串
-                    if (dev_tag != nullptr) {
-                        dev_out_put += QString("  \"%1_fcode:%2_type:%3_rate:%4_unit:%5_rOrw:%6\",\n")
-                                           .arg(dev_tag->m_addrOffset)                                // 地址偏移
-                                           .arg(dev_tag->m_functionCodes)                             // 功能码（直接作为字符串）
-                                           .arg(dev_tag->m_dataType)                                  // 数据类型
-                                           .arg(dev_tag->m_rate)                                      // 比率
-                                           .arg(dev_tag->m_unit.isEmpty() ? "none" : dev_tag->m_unit) // 单位
-                                           .arg(dev_tag->m_writeable == 0 ? "R" : "RW");              // 读/写权限
-                    }
-                } else if (it->m_tagType == "CmdTag") {
+                for (auto it : tags) {
+                    if (it->m_tagType == "DeviceTag") {
+                        // 将标签转换为 DeviceTag 类型
+                        DeviceTag *dev_tag = dynamic_cast<DeviceTag *>(it.data());
 
-                    CmdTag *cmd_tag = dynamic_cast<CmdTag *>(it.data());
-
-                    // 如果转换成功，拼接输出字符串
-                    if (cmd_tag != nullptr) {
-                        cmd_out_put += QString("  \"%1_%2.%3")
-                                           .arg(cmd_tag->m_name)
-                                           .arg(cmd_tag->m_cmdType)
-                                           .arg(QString("%1_%2=%3").arg(cmd_tag->m_args[0][0]).arg(cmd_tag->m_args[0][1]).arg(cmd_tag->m_args[0][2]));
-
-                        for (int i = 1; i < cmd_tag->m_args.count(); ++i) {
-                            const auto &it = cmd_tag->m_args[i];
-                            cmd_out_put += QString("#%1_%2=%3").arg(it[0]).arg(it[1]).arg(it[2]);
+                        // 如果转换成功，拼接输出字符串
+                        if (dev_tag != nullptr) {
+                            dev_out_put += QString("  \"%1_fcode:%2_type:%3_rate:%4_unit:%5_rOrw:%6\",\n")
+                                               .arg(dev_tag->m_addrOffset)                                // 地址偏移
+                                               .arg(dev_tag->m_functionCodes)                             // 功能码（直接作为字符串）
+                                               .arg(dev_tag->m_dataType)                                  // 数据类型
+                                               .arg(dev_tag->m_rate)                                      // 比率
+                                               .arg(dev_tag->m_unit.isEmpty() ? "none" : dev_tag->m_unit) // 单位
+                                               .arg(dev_tag->m_writeable == 0 ? "R" : "RW");              // 读/写权限
                         }
+                    } else if (it->m_tagType == "CmdTag") {
 
-                        cmd_out_put += QString("\",\n");
+                        CmdTag *cmd_tag = dynamic_cast<CmdTag *>(it.data());
+
+                        // 如果转换成功，拼接输出字符串
+                        if (cmd_tag != nullptr) {
+                            cmd_out_put +=
+                                QString("  \"%1_%2.%3")
+                                    .arg(cmd_tag->m_name)
+                                    .arg(cmd_tag->m_cmdType)
+                                    .arg(QString("%1_%2=%3").arg(cmd_tag->m_args[0][0]).arg(cmd_tag->m_args[0][1]).arg(cmd_tag->m_args[0][2]));
+
+                            for (int i = 1; i < cmd_tag->m_args.count(); ++i) {
+                                const auto &it = cmd_tag->m_args[i];
+                                cmd_out_put += QString("#%1_%2=%3").arg(it[0]).arg(it[1]).arg(it[2]);
+                            }
+
+                            cmd_out_put += QString("\",\n");
+                        }
                     }
                 }
+
+                // 配置文件的结束部分
+                dev_out_put += "  \"end\"\n}\n";
+                cmd_out_put += "  \"end\"\n}\n";
+
+                output += dev_out_put;
+                output += cmd_out_put;
             }
-
-            // 配置文件的结束部分
-            dev_out_put += "  \"end\"\n}\n";
-            cmd_out_put += "  \"end\"\n}\n";
-
-            output += dev_out_put;
-            output += cmd_out_put;
-
             // 打印输出字符串到控制台，用于调试
             qDebug() << output;
 
@@ -272,9 +279,6 @@ void EmsConfigExport::ExportDevModleCfg()
                                    .arg(pObj->Category)
                                    .arg(pObj->ProtoType)
                                    .arg(pObj->ArchType);
-
-            // 将文件名和路径组合
-            QString fullPath = m_dirPath + "/" + fileName;
 
             SaveFile(fileName, output);
         }
@@ -302,39 +306,44 @@ void EmsConfigExport::ExportRedisCfg()
 
             // 输出字符串
             QString output;
-            QString dev_out_put;
 
-            // 配置文件的起始部分
-            dev_out_put += "{\n  \"start\",\n";
+            if (pObj->Category == 5 || pObj->Category == 6) {
+                ExportBmsRedisCfg(tag_map, pObj->dev_Name, output);
+            } else {
+                QString dev_out_put;
 
-            // 根据设备名称获取关联的标签
-            const QVector<QSharedPointer<Tag>> &tags = tag_map[pObj->dev_Name];
+                // 配置文件的起始部分
+                dev_out_put += "{\n  \"start\",\n";
 
-            for (auto it : tags) {
-                if (it->m_tagType == "RedisTag") {
+                // 根据设备名称获取关联的标签
+                const QVector<QSharedPointer<Tag>> &tags = tag_map[pObj->dev_Name];
 
-                    RedisTag *redis_tag = dynamic_cast<RedisTag *>(it.data());
+                for (auto it : tags) {
+                    if (it->m_tagType == "RedisTag") {
 
-                    // 如果转换成功，拼接输出字符串
-                    if (redis_tag != nullptr) {
+                        RedisTag *redis_tag = dynamic_cast<RedisTag *>(it.data());
 
-                        if (redis_tag->m_dataType != "SQ_Keys_or") {
-                            dev_out_put += QString("  \"%1_%2_%3_%4\",\n")
-                                               .arg(redis_tag->m_name)
-                                               .arg(redis_tag->m_dataType)
-                                               .arg(redis_tag->m_addrOffset)
-                                               .arg(((redis_tag->m_dataType == "D") ? "null" : QString("bit%1").arg(redis_tag->m_addrOffsetBit)));
-                        } else {
-                            dev_out_put += QString("  \"%1_%2_%3\",\n").arg(redis_tag->m_name).arg(redis_tag->m_dataType).arg(redis_tag->formula);
+                        // 如果转换成功，拼接输出字符串
+                        if (redis_tag != nullptr) {
+
+                            if (redis_tag->m_dataType != "SQ_Keys_or") {
+                                dev_out_put += QString("  \"%1_%2_%3_%4\",\n")
+                                                   .arg(redis_tag->m_name)
+                                                   .arg(redis_tag->m_dataType)
+                                                   .arg(redis_tag->m_addrOffset)
+                                                   .arg(((redis_tag->m_dataType == "D") ? "null" : QString("bit%1").arg(redis_tag->m_addrOffsetBit)));
+                            } else {
+                                dev_out_put += QString("  \"%1_%2_%3\",\n").arg(redis_tag->m_name).arg(redis_tag->m_dataType).arg(redis_tag->formula);
+                            }
                         }
                     }
                 }
+
+                // 配置文件的结束部分
+                dev_out_put += "  \"end\"\n}\n";
+
+                output += dev_out_put;
             }
-
-            // 配置文件的结束部分
-            dev_out_put += "  \"end\"\n}\n";
-
-            output += dev_out_put;
 
             // 打印输出字符串到控制台，用于调试
             qDebug() << output;
@@ -372,4 +381,112 @@ void EmsConfigExport::SaveFile(QString fileName, QString output)
         // 弹出错误提示框
         QMessageBox::critical(nullptr, "Export Failed", errorMessage, QMessageBox::Ok);
     }
+}
+
+void EmsConfigExport::ExportBmsDevCfg(QMap<QString, QVector<QSharedPointer<Tag>>> &tagMap, QString devName, QString &output)
+{
+    QString stack_out_put;
+    QString group_out_put;
+    QString monomer_out_put;
+
+    // 配置文件的起始部分
+    stack_out_put += "{\n  \"start\",\n";
+    group_out_put += "{\n  \"start\",\n";
+    monomer_out_put += "{\n  \"start\",\n";
+
+    // 根据设备名称获取关联的标签
+    const QVector<QSharedPointer<Tag>> &tags = tagMap[devName];
+
+    for (auto it : tags) {
+        if (it->m_tagType == "BmsTag") {
+            // 将标签转换为 DeviceTag 类型
+            BmsTag *bms_tag = dynamic_cast<BmsTag *>(it.data());
+
+            // 如果转换成功，拼接输出字符串
+            if (bms_tag != nullptr && bms_tag->m_isCollect) {
+
+                QString temp_str = QString("  \"%1_%2_%3_%4_0_1_0_=_%5\",\n")
+                                       .arg(bms_tag->m_addrOffset)    // 地址偏移
+                                       .arg(bms_tag->m_functionCodes) // 功能码（直接作为字符串）
+                                       .arg(bms_tag->m_dataType)      // 数据类型
+                                       .arg(bms_tag->m_rate)          // 缩放比率
+                                       .arg(bms_tag->m_name);         // 点位名称
+
+                if (bms_tag->m_dataSource == 0) {
+                    stack_out_put += temp_str;
+                } else if (bms_tag->m_dataSource == 1) {
+                    group_out_put += temp_str;
+
+                } else if (bms_tag->m_dataSource == 2) {
+                    monomer_out_put += temp_str;
+                }
+            }
+        }
+    }
+
+    // 配置文件的结束部分
+    stack_out_put += "  \"end\"\n}\n";
+    group_out_put += "  \"end\"\n}\n";
+    monomer_out_put += "  \"end\"\n}\n";
+
+    output += stack_out_put;
+    output += group_out_put;
+    output += monomer_out_put;
+}
+
+void EmsConfigExport::ExportBmsRedisCfg(QMap<QString, QVector<QSharedPointer<Tag>>> &tagMap, QString devName, QString &output)
+{
+    QString stack_out_put;
+    QString group_out_put;
+    QString monomer_out_put;
+    QString Tmp_out_put;
+
+    // 配置文件的起始部分
+    stack_out_put += "{\n  \"start\",\n";
+    group_out_put += "{\n  \"start\",\n";
+    monomer_out_put += "{\n  \"start\",\n";
+    Tmp_out_put += "{\n  \"start\",\n";
+
+    // 根据设备名称获取关联的标签
+    const QVector<QSharedPointer<Tag>> &tags = tagMap[devName];
+
+    for (auto it : tags) {
+        if (it->m_tagType == "BmsTag") {
+            // 将标签转换为 DeviceTag 类型
+            BmsTag *bms_tag = dynamic_cast<BmsTag *>(it.data());
+
+            // 如果转换成功，拼接输出字符串
+            if (bms_tag != nullptr && bms_tag->m_isUpload) {
+
+                QString temp_str = QString("  \"%1_%2%3\",\n")
+                                       .arg(bms_tag->m_name) // 点位名称
+                                       .arg(bms_tag->m_dataType)
+                                       .arg(bms_tag->m_formula.isEmpty() ? QString("") : QString("_EX:%1").arg(bms_tag->m_formula)); // 数据计算
+                if( bms_tag->m_name != "Tmp")
+                {
+                    if (bms_tag->m_dataSource == 0) {
+                        stack_out_put += temp_str;
+                    } else if (bms_tag->m_dataSource == 1) {
+                        group_out_put += temp_str;
+
+                    } else if (bms_tag->m_dataSource == 2) {
+                        monomer_out_put += temp_str;
+                    }
+                }else{
+                    Tmp_out_put += temp_str;
+                }
+            }
+        }
+    }
+
+    // 配置文件的结束部分
+    stack_out_put += "  \"end\"\n}\n";
+    group_out_put += "  \"end\"\n}\n";
+    monomer_out_put += "  \"end\"\n}\n";
+    Tmp_out_put += "  \"end\"\n}\n";
+
+    output += stack_out_put;
+    output += group_out_put;
+    output += monomer_out_put;
+    output += Tmp_out_put;
 }

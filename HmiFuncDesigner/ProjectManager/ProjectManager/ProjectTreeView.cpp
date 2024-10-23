@@ -157,6 +157,16 @@ void ProjectTreeView::updateUI()
 
 
 
+    m_pBmsMgrObj = new QStandardItem(QIcon(":/images/pj_sys.png"), tr("Bms点表管理"));
+    m_pBmsMgrObj->setEditable(false);
+    szListUserData.clear();
+    szListUserData << QString("BmsMgr").toUpper()
+                   << m_pBmsMgrObj->text()
+                   << "";
+    m_pBmsMgrObj->setData(szListUserData, Qt::UserRole + 1);
+    m_pProjectItemObj->appendRow(m_pBmsMgrObj);
+
+
     m_pDataBaseManagerObj = new QStandardItem(QIcon(":/images/pj_sys.png"), tr("数据库管理"));
     m_pDataBaseManagerObj->setEditable(false);
     m_pDataBaseManagerObj->setFlags(m_pDataBaseManagerObj->flags() & ~(Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable));

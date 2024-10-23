@@ -2,7 +2,7 @@
 #define EMSCONFIGEXPORT_H
 
 #include <QString>
-
+#include "./projdata/Tag.h"
 
 class EmsConfigExport
 {
@@ -21,6 +21,8 @@ protected:
 
     void SaveFile(QString fileName, QString output);
 
+    void ExportBmsDevCfg(QMap<QString, QVector<QSharedPointer<Tag>>>& tagMap, QString devName, QString& output);
+    void ExportBmsRedisCfg(QMap<QString, QVector<QSharedPointer<Tag>>>& tagMap, QString devName, QString& output);
 
     QString m_dirPath;
 };
